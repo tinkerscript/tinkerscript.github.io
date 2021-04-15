@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Tinkerland</title>
+    </head>
+    <body>
+        <div id="id"></div>
+        <br />
+        <button id="regenerate">Regenerate</button>
+        <script src="adjective-adjective-animal.min.js"></script>
+        <script src="toss.js"></script>
+        <script type="text/javascript">
+            function generate() {
+                adjAdjAnimal().then(id => {
+                    document.querySelector('#id').innerText = id;
+                    localStorage.setItem('toss-id', id);
+                }).catch(err => {
+                    console.error(err);
+                });
+            }
+
+            document.querySelector('#regenerate').addEventListener('click', generate, false);
+            generate();
+        </script>
+    </body>
+</html>
