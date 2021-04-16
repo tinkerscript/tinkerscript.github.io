@@ -1,25 +1,15 @@
 <html>
     <head>
-        <title>Tinkerland</title>
+        <title>Toss Hub</title>
     </head>
     <body>
         <div id="id"></div>
         <br />
-        <button id="regenerate">Generate</button>
-        <script src="adjective-adjective-animal.min.js"></script>
         <script src="toss.js"></script>
         <script type="text/javascript">
-            function generate() {
-                adjAdjAnimal().then(id => {
-                    document.querySelector('#id').innerText = id;
-                    localStorage.setItem('toss-id', id);
-                }).catch(err => {
-                    console.error(err);
-                });
-            }
-
-            document.querySelector('#id').innerText = localStorage.getItem('toss-id') || 'Press button to gen ID';
-            document.querySelector('#regenerate').addEventListener('click', generate, false);
+            const id = localStorage.getItem('toss-id');
+            const placeholder = 'Use satellite to gen ID';
+            document.querySelector('#id').innerText = id || placeholder;
         </script>
     </body>
 </html>
