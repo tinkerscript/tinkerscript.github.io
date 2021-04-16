@@ -4,7 +4,7 @@
     </head>
     <body>
         <div>Hub</div>
-        <script src="/toss.js"></script>
+        <script src="/toss/toss.js"></script>
         <script type="text/javascript">
             var toss = window.toss;
 
@@ -25,7 +25,11 @@
             try {
                 var raw = localStorage.getItem('userUuid');
                 var stuff = JSON.parse(raw);
-                document.write(stuff?.item?.data);
+                var id = stuff?.item?.data;
+
+                if (id) {
+                    document.write(id);
+                }
             } catch (err) {
                 console.error(err);
             }
