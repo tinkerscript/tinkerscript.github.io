@@ -70,7 +70,7 @@ function __generator(thisArg, body) {
 var getHostname = function (origin) { return (new UrlParser(origin)).hostname; };
 var getDomainAndPath = function (origin) {
     var urlParts = new UrlParser(origin);
-    return "" + urlParts.host + urlParts.pathname;
+    return "" + urlParts.host;
 };
 
 /**
