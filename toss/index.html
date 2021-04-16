@@ -1,15 +1,34 @@
 <html>
     <head>
-        <title>Toss Hub</title>
+        <title>Toss</title>
     </head>
     <body>
-        <div id="id"></div>
-        <br />
-        <script src="toss.js"></script>
+        <div>Hub</div>
+        <script src="/toss.js"></script>
         <script type="text/javascript">
-            const id = localStorage.getItem('toss-id');
-            const placeholder = 'Use satellite to gen ID';
-            document.querySelector('#id').innerText = id || placeholder;
+            var toss = window.toss;
+
+            if (toss) {
+                toss.createIframe({
+                    dependentDomains: ['lnd-bank.mrt.de.finom.one'],
+                    dataConfigs: [
+                        {
+                            dataKey: 'userUuid',
+                            handler: () => Math.random().toString(36).substr(2, 9)
+                        }
+                    ]
+                });
+            } else {
+                document.write('toss not found');
+            }
+
+            try {
+                var raw = localStorage.getItem('userUuid');
+                var stuff = JSON.parse(raw);
+                document.write(stuff?.item?.data);
+            } catch (err) {
+                console.error(err);
+            }
         </script>
     </body>
 </html>
