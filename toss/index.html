@@ -10,23 +10,15 @@
         <script type="text/javascript">
             var toss = window.toss;
 
-            async function getID() {
-                let id;
-
-                try {
-                    id = await toss.get({
-                        iframeUrl: 'https://candybober.api.stdlib.com/toss@dev/hello.html',
-                        dataKey: 'userUuid',
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
-
-                document.write(id);
-            }
-
             if (toss) {
-                getID();
+                toss.get({
+                    iframeUrl: 'https://candybober.api.stdlib.com/toss@dev/hello.html',
+                    dataKey: 'userUuid'
+                }).then(id => {
+                    document.write(id);
+                }).catch(err => {
+                    console.error(err);
+                })
             } else {
                 document.write('toss not found');
             }
