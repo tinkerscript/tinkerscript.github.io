@@ -1,3 +1,1200 @@
-/*! For license information please see main.js.LICENSE.txt */
-(()=>{"use strict";var e,t={200:(e,t,r)=>{var n,o=(n=r(564))&&"object"==typeof n&&"default"in n?n.default:n;function a(e,t,r,n){return new(r||(r=Promise))((function(o,a){function i(e){try{u(n.next(e))}catch(e){a(e)}}function s(e){try{u(n.throw(e))}catch(e){a(e)}}function u(e){var t;e.done?o(e.value):(t=e.value,t instanceof r?t:new r((function(e){e(t)}))).then(i,s)}u((n=n.apply(e,t||[])).next())}))}function i(e,t){var r,n,o,a,i={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return a={next:s(0),throw:s(1),return:s(2)},"function"==typeof Symbol&&(a[Symbol.iterator]=function(){return this}),a;function s(a){return function(s){return function(a){if(r)throw new TypeError("Generator is already executing.");for(;i;)try{if(r=1,n&&(o=2&a[0]?n.return:a[0]?n.throw||((o=n.return)&&o.call(n),0):n.next)&&!(o=o.call(n,a[1])).done)return o;switch(n=0,o&&(a=[2&a[0],o.value]),a[0]){case 0:case 1:o=a;break;case 4:return i.label++,{value:a[1],done:!1};case 5:i.label++,n=a[1],a=[0];continue;case 7:a=i.ops.pop(),i.trys.pop();continue;default:if(!((o=(o=i.trys).length>0&&o[o.length-1])||6!==a[0]&&2!==a[0])){i=0;continue}if(3===a[0]&&(!o||a[1]>o[0]&&a[1]<o[3])){i.label=a[1];break}if(6===a[0]&&i.label<o[1]){i.label=o[1],o=a;break}if(o&&i.label<o[2]){i.label=o[2],i.ops.push(a);break}o[2]&&i.ops.pop(),i.trys.pop();continue}a=t.call(e,i)}catch(e){a=[6,e],n=0}finally{r=o=0}if(5&a[0])throw a[1];return{value:a[0]?a[1]:void 0,done:!0}}([a,s])}}}var s,u=function(e){return new o(e).hostname},c=function(e){var t=new o(e);return""+t.host+t.pathname},l={},f=function(e){return a(void 0,void 0,void 0,(function(){var t;return i(this,(function(r){return t=c(e),l[t]=l[t]||h(e),[2,l[t]]}))}))},h=function(e){return new Promise((function(t){var r=document.createElement("iframe");r.src=e,r.style.display="none",r.onload=function(){return t(r)},window.document.body.appendChild(r)}))},p="response",d="INFINITY_TOKEN",v=function(e,t){return a(void 0,void 0,void 0,(function(){var r,n;return i(this,(function(o){switch(o.label){case 0:return o.trys.push([0,2,,3]),[4,e(t)];case 1:return r=o.sent(),[3,3];case 2:return n=o.sent(),r=y(t.dataKey,n.message),[3,3];case 3:return[2,r]}}))}))},y=function(e,t){return{type:p,dataKey:e,error:t}},w=function(e,t,r){void 0===r&&(r=946728e6);var n=m(r);if(void 0===t)throw new Error("Request to set "+e+" contained no data.");var o={data:t,expiry:n};return localStorage.setItem(e,JSON.stringify({item:o})),g(e)},m=function(e){return e===1/0?d:Date.now()+864e5*e},g=function(e){var t=localStorage.getItem(e)
-;if(!t)return null;var r=JSON.parse(t).item,n=r.data,o=r.expiry;return o===d&&(o=1/0),Date.now()>o?(localStorage.removeItem(e),null):n},b=((s={}).get=function(e){var t=e.dataKey;return{type:p,dataKey:t,data:g(t)}},s.set=function(e){if(!("data"in e))throw new Error("Must include a data payload in calls to setData with "+e.dataKey+" dataKey");var t,r=e.dataKey,n=e.data;"expires"in e&&(t=e.expires);var o=w(r,n,t);return{type:p,dataKey:e.dataKey,data:o}},s),x=function(e){return e.reduce((function(e,t){var r=t.dataKey;if(e[r])throw new Error("Multiple modules are attempting to define the "+r+" DataConfig.  Please ensure the configuration for this dataKey is set once per implementation.");return e[r]=function(e){var t=e.handler,r=e.dataKey,n=e.expires;return function(e){return a(void 0,void 0,void 0,(function(){var o,a,s;return i(this,(function(i){switch(i.label){case 0:if("resetData"in e&&e.resetData?localStorage.removeItem(r):o=g(r),o)return[3,5];a=void 0,"handlerPayload"in e&&(a=e.handlerPayload),i.label=1;case 1:return i.trys.push([1,3,,4]),[4,t(a)];case 2:return o=i.sent(),[3,4];case 3:throw s=i.sent(),new Error("Something went wrong in the custom handler for "+r+" data request: "+s.message);case 4:o&&w(r,o,n),i.label=5;case 5:if(!o)throw new Error("Failed to retrieve the "+r+" data from the iframe. Please confirm the DataConfig handler returns a value in every case.");return[2,{type:p,dataKey:r,data:o}]}}))}))}}(t),e}),b)};t.Vz=function(e){var t=e.dependentDomains,r=e.dataConfigs,n=x(void 0===r?[]:r);t.push(u(origin)),function(e,t){window.addEventListener("message",(function(r){var n=r.origin,o=r.data;return a(void 0,void 0,void 0,(function(){var r,a,s,c,l,f;return i(this,(function(i){switch(i.label){case 0:if(r=u(n),!t.includes(r))return[3,2];a=void 0,s=void 0;try{c=JSON.parse(o),s=c.config,a=c.type}catch(e){return[2]}return(l=function(e,t,r){return"set"===e?r.set:r[t]?r[t]:"get"===e?r.get:null}(a,s.dataKey,e))?[4,v(l,s)]:[2];case 1:f=i.sent(),window.parent.postMessage(JSON.stringify(f),n),i.label=2;case 2:return[2]}}))}))}),!1)}(n,t)},t.U2=function(e){return function(e,t){return a(void 0,void 0,void 0,(function(){var r;return i(this,(function(n){return r=function(e){var t=e.dataKey,r=e.iframeUrl;return new Promise((function(e,n){var o=c(r),a=function(r){var i,s,u,l=r.origin,f=r.data;try{s=(i=JSON.parse(f)).type,u=i.dataKey}catch(e){return}o===c(l)&&"response"===s&&u===t&&(window.removeEventListener("message",a),"data"in i?e(i.data):n("error"in i?new Error("Error received from "+t+" data request! "+i.error):new Error("No data or errors received in request for "+t+".  Please submit a ticket to the project maintainers including the custom handler for "+t+", should one exist. This should not be possible.")))};window.addEventListener("message",a,!1)}))}(e),function(e,t){a(void 0,void 0,void 0,(function(){var r,n,o;return i(this,(function(a){switch(a.label){case 0:return r=t.iframeUrl,[4,f(r)];case 1:if(n=a.sent(),o={type:e,config:t},!n.contentWindow)throw new Error("iframe contentWindow not present on window. Something has apparently removed it.");return n.contentWindow.postMessage(JSON.stringify(o),r),[2]}}))}))}(t,e),[2,r]}))}))}(e,"get")}},129:(e,t)=>{var r=Object.prototype.hasOwnProperty;function n(e){try{return decodeURIComponent(e.replace(/\+/g," "))}catch(e){return null}}function o(e){try{return encodeURIComponent(e)}catch(e){return null}}t.stringify=function(e,t){t=t||"";var n,a,i=[];for(a in"string"!=typeof t&&(t="?"),e)if(r.call(e,a)){if((n=e[a])||null!=n&&!isNaN(n)||(n=""),a=o(a),n=o(n),null===a||null===n)continue;i.push(a+"="+n)}return i.length?t+i.join("&"):""},t.parse=function(e){for(var t,r=/([^=?#&]+)=?([^&]*)/g,o={};t=r.exec(e);){var a=n(t[1]),i=n(t[2]);null===a||null===i||a in o||(o[a]=i)}return o}},418:e=>{e.exports=function(e,t){if(t=t.split(":")[0],!(e=+e))return!1;switch(t){case"http":case"ws":return 80!==e;case"https":case"wss":return 443!==e;case"ftp":return 21!==e;case"gopher":return 70!==e;case"file":return!1}return 0!==e}},564:(e,t,r)=>{var n=r(418),o=r(129),a=/^[A-Za-z][A-Za-z0-9+-.]*:[\\/]+/,i=/^([a-z][a-z0-9.+-]*:)?([\\/]{1,})?([\S\s]*)/i,s=new RegExp("^[\\x09\\x0A\\x0B\\x0C\\x0D\\x20\\xA0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF]+");function u(e){return(e||"").toString().replace(s,"")}var c=[["#","hash"],["?","query"],function(e){return e.replace("\\","/")},["/","pathname"],["@","auth",1],[NaN,"host",void 0,1,1],[/:(\d+)$/,"port",void 0,1],[NaN,"hostname",void 0,1,1]],l={hash:1,query:1};function f(e){var t,n=("undefined"!=typeof window?window:void 0!==r.g?r.g:"undefined"!=typeof self?self:{}).location||{},o={},i=typeof(e=e||n);if("blob:"===e.protocol)o=new p(unescape(e.pathname),{});else if("string"===i)for(t in o=new p(e,{}),l)delete o[t];else if("object"===i){for(t in e)t in l||(o[t]=e[t]);void 0===o.slashes&&(o.slashes=a.test(e.href))}return o}function h(e){e=u(e);var t=i.exec(e);return{protocol:t[1]?t[1].toLowerCase():"",slashes:!!(t[2]&&t[2].length>=2),rest:t[2]&&1===t[2].length?"/"+t[3]:t[3]}}function p(e,t,r){if(e=u(e),!(this instanceof p))return new p(e,t,r);var a,i,s,l,d,v,y=c.slice(),w=typeof t,m=this,g=0;for("object"!==w&&"string"!==w&&(r=t,t=null),r&&"function"!=typeof r&&(r=o.parse),t=f(t),a=!(i=h(e||"")).protocol&&!i.slashes,m.slashes=i.slashes||a&&t.slashes,m.protocol=i.protocol||t.protocol||"",e=i.rest,i.slashes||(y[3]=[/(.*)/,"pathname"]);g<y.length;g++)"function"!=typeof(l=y[g])?(s=l[0],v=l[1],s!=s?m[v]=e:"string"==typeof s?~(d=e.indexOf(s))&&("number"==typeof l[2]?(m[v]=e.slice(0,d),e=e.slice(d+l[2])):(m[v]=e.slice(d),e=e.slice(0,d))):(d=s.exec(e))&&(m[v]=d[1],e=e.slice(0,d.index)),m[v]=m[v]||a&&l[3]&&t[v]||"",l[4]&&(m[v]=m[v].toLowerCase())):e=l(e);r&&(m.query=r(m.query)),a&&t.slashes&&"/"!==m.pathname.charAt(0)&&(""!==m.pathname||""!==t.pathname)&&(m.pathname=function(e,t){if(""===e)return t;for(var r=(t||"/").split("/").slice(0,-1).concat(e.split("/")),n=r.length,o=r[n-1],a=!1,i=0;n--;)"."===r[n]?r.splice(n,1):".."===r[n]?(r.splice(n,1),i++):i&&(0===n&&(a=!0),r.splice(n,1),i--);return a&&r.unshift(""),"."!==o&&".."!==o||r.push(""),r.join("/")}(m.pathname,t.pathname)),"/"!==m.pathname.charAt(0)&&m.hostname&&(m.pathname="/"+m.pathname),n(m.port,m.protocol)||(m.host=m.hostname,m.port=""),m.username=m.password="",m.auth&&(l=m.auth.split(":"),m.username=l[0]||"",m.password=l[1]||""),m.origin=m.protocol&&m.host&&"file:"!==m.protocol?m.protocol+"//"+m.host:"null",m.href=m.toString()}p.prototype={set:function(e,t,r){var a=this;switch(e){case"query":"string"==typeof t&&t.length&&(t=(r||o.parse)(t)),a[e]=t;break;case"port":a[e]=t,n(t,a.protocol)?t&&(a.host=a.hostname+":"+t):(a.host=a.hostname,a[e]="");break;case"hostname":a[e]=t,a.port&&(t+=":"+a.port),a.host=t;break;case"host":a[e]=t,/:\d+$/.test(t)?(t=t.split(":"),a.port=t.pop(),a.hostname=t.join(":")):(a.hostname=t,a.port="");break;case"protocol":a.protocol=t.toLowerCase(),a.slashes=!r;break;case"pathname":case"hash":if(t){var i="pathname"===e?"/":"#";a[e]=t.charAt(0)!==i?i+t:t}else a[e]=t;break;default:a[e]=t}for(var s=0;s<c.length;s++){var u=c[s];u[4]&&(a[u[1]]=a[u[1]].toLowerCase())}return a.origin=a.protocol&&a.host&&"file:"!==a.protocol?a.protocol+"//"+a.host:"null",a.href=a.toString(),a},toString:function(e){e&&"function"==typeof e||(e=o.stringify);var t,r=this,n=r.protocol;n&&":"!==n.charAt(n.length-1)&&(n+=":");var a=n+(r.slashes?"//":"");return r.username&&(a+=r.username,r.password&&(a+=":"+r.password),a+="@"),a+=r.host+r.pathname,(t="object"==typeof r.query?e(r.query):r.query)&&(a+="?"!==t.charAt(0)?"?"+t:t),r.hash&&(a+=r.hash),a}},p.extractProtocol=h,p.location=f,p.trimLeft=u,p.qs=o,e.exports=p}},r={};function n(e){var o=r[e];if(void 0!==o)return o.exports;var a=r[e]={exports:{}};return t[e](a,a.exports,n),a.exports}n.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),e=n(200),window.toss={createIframe:e.Vz,get:e.U2}})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 200:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+var __webpack_unused_export__;
+
+
+__webpack_unused_export__ = ({ value: true });
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var UrlParser = _interopDefault(__webpack_require__(564));
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+var getHostname = function (origin) { return (new UrlParser(origin)).hostname; };
+var getDomainAndPath = function (origin) {
+    var urlParts = new UrlParser(origin);
+    return "" + urlParts.host + urlParts.pathname;
+};
+
+/**
+ * Here we create the listening functions that will receive data-type specific
+ * requests within the iframe, retrieve the data via the user-defined DataConfig
+ * handler, cache said data in localStorage, then return it to the requesting
+ * application.
+ */
+var responseTypeName = 'response';
+var appListenerFactory = function (_a) {
+    var dataKey = _a.dataKey, iframeUrl = _a.iframeUrl;
+    return new Promise(function (resolve, reject) {
+        // // Cache the iframe's base domain for use in IDing requests from
+        // // it later on.
+        var iframeLocation = getDomainAndPath(iframeUrl);
+        // Create a listener, which will await iframe responses
+        var listener = function (_a) {
+            var origin = _a.origin, maybeIframePayload = _a.data;
+            // Attempt to parse payload:
+            var response;
+            var responseType;
+            var responseDataKey;
+            try {
+                response = JSON.parse(maybeIframePayload);
+                responseType = response.type;
+                responseDataKey = response.dataKey;
+            }
+            catch (e) {
+                // Guess it wasn't one of ours.
+                // Logging here might not be a bad idea, but also might get noisy
+                // if ads and whatnot started emitting to this iframe.
+                return;
+            }
+            if (
+            // Ensure the caller is the main site's iframe
+            iframeLocation === getDomainAndPath(origin) &&
+                // and that this is a response from the iframe:
+                responseType === responseTypeName &&
+                // and that the response is intended for this data type
+                responseDataKey === dataKey) {
+                // Clean up:
+                window.removeEventListener('message', listener);
+                if ('data' in response) {
+                    // Success! Relay the data to the caller:
+                    resolve(response.data);
+                }
+                else if ('error' in response) {
+                    // Uh-oh! Something went wrong! Relay error to caller:
+                    reject(new Error("Error received from " + dataKey + " data request! " + response.error));
+                }
+                else {
+                    reject(new Error("No data or errors received in request for " + dataKey + ".  Please submit a ticket to the project maintainers including the custom handler for " + dataKey + ", should one exist. This should not be possible."));
+                }
+            }
+        };
+        // Set the listener a-listenin':
+        window.addEventListener('message', listener, false);
+    });
+};
+
+var cache = {};
+/**
+ * Create and cache the iframe.
+ *
+ * We're caching by domain, in case multiple hub sites are referenced
+ * from a single satellite domain.
+ *
+ * We're returning a promise to avoid a race condition.  If two calls
+ * go out for the same iframe, and the second happens before the iframe
+ * has loaded, we want the second to also be beholden to the iframe's
+ * loading.  The promise is what ensures the iframe has loaded, so we'll
+ * need to return that for all subsequent calls.
+ */
+var getIframe = function (iframeUrl) { return __awaiter(void 0, void 0, void 0, function () {
+    var domain;
+    return __generator(this, function (_a) {
+        domain = getDomainAndPath(iframeUrl);
+        cache[domain] = cache[domain] || createIframe(iframeUrl);
+        return [2 /*return*/, cache[domain]];
+    });
+}); };
+/**
+ * Create an promise that resolves to a fully-loaded iframe:
+ */
+var createIframe = function (iframeUrl) { return new Promise(function (resolve) {
+    var iframe = document.createElement('iframe');
+    iframe.src = iframeUrl;
+    iframe.style.display = 'none';
+    iframe.onload = function () { return resolve(iframe); };
+    window.document.body.appendChild(iframe);
+}); };
+
+/**
+ * Here we inject or gather the cached iframe, then post the request to it.
+ */
+var sendRequest = function (type, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var iframeUrl, iframe, request;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                iframeUrl = config.iframeUrl;
+                return [4 /*yield*/, getIframe(iframeUrl)
+                    // Form the request object to send to the iframe:
+                ];
+            case 1:
+                iframe = _a.sent();
+                request = { type: type, config: config };
+                // Send the iframe the request upon load into the DOM:
+                if (iframe.contentWindow) {
+                    iframe.contentWindow.postMessage(JSON.stringify(request), iframeUrl);
+                }
+                else {
+                    throw new Error('iframe contentWindow not present on window. Something has apparently removed it.');
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+
+var REQUEST_TYPE_GET = 'get';
+var REQUEST_TYPE_SET = 'set';
+var REQUEST_TYPE_RESPONSE = 'response';
+var INFINITY_TOKEN = 'INFINITY_TOKEN';
+
+/**
+ * In this file we set up the listener for the application,
+ * then send out the request for the data to the iframe.
+ *
+ * The iframe will receive the request and check for a pre-existing
+ * value.  If that value does not exist, the iframe will
+ * execute the user-defined data-getter, caching the response in
+ * localStorage.
+ *
+ * Finally, the iframe will relay to recovered value back to the
+ * application.
+ */
+var get = function (config) {
+    var type = REQUEST_TYPE_GET;
+    return makeRequest(config, type);
+};
+var set = function (config) {
+    var type = REQUEST_TYPE_SET;
+    return makeRequest(config, type);
+};
+var makeRequest = function (config, type) { return __awaiter(void 0, void 0, void 0, function () {
+    var resultPromise;
+    return __generator(this, function (_a) {
+        resultPromise = appListenerFactory(config);
+        // Create the request for data, and send it into the iframe:
+        sendRequest(type, config);
+        return [2 /*return*/, resultPromise];
+    });
+}); };
+
+/**
+ * In this file we create the single listener for the iframe.
+ * Once a message is posted to the iframe, this file receives
+ * it, ensures the sender is on the list of dependent sites,
+ * then routes the request to the proper data getter.
+ */
+var setIframeListener = function (routes, dependentDomains) {
+    var iframeListener = function (_a) {
+        var origin = _a.origin, appRequestPayload = _a.data;
+        return __awaiter(void 0, void 0, void 0, function () {
+            var requesterBaseDomain, type, config, requestSpecs, handler, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        requesterBaseDomain = getHostname(origin);
+                        if (!dependentDomains.includes(requesterBaseDomain)) return [3 /*break*/, 2];
+                        type = void 0;
+                        config = void 0;
+                        try {
+                            requestSpecs = JSON.parse(appRequestPayload);
+                            config = requestSpecs.config;
+                            type = requestSpecs.type;
+                        }
+                        catch (e) {
+                            // Guess it wasn't one of ours.
+                            // Logging here might not be a bad idea, but also might get noisy
+                            // if ads and whatnot started emitting to this iframe.
+                            return [2 /*return*/];
+                        }
+                        handler = getEndpoint(type, config.dataKey, routes);
+                        if (!handler) {
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, executeRoute(handler, config)
+                            // Emit the result back to the host application:
+                        ];
+                    case 1:
+                        response = _b.sent();
+                        // Emit the result back to the host application:
+                        window.parent.postMessage(JSON.stringify(response), origin);
+                        _b.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    // Add the event listener to start tracking the calls:
+    window.addEventListener('message', iframeListener, false);
+};
+// Determine the handler the request is destined for:
+var getEndpoint = function (requestType, dataKey, routes) {
+    var handler;
+    if (requestType === REQUEST_TYPE_SET) {
+        // The app has requested to set a data value:
+        handler = routes[REQUEST_TYPE_SET];
+    }
+    else if (routes[dataKey]) {
+        // There is a custom handler set up for this `dataKey`.
+        handler = routes[dataKey];
+    }
+    else if (requestType === REQUEST_TYPE_GET) {
+        // This is a generic get request, without a custom handler.
+        handler = routes[REQUEST_TYPE_GET];
+    }
+    else {
+        // The `requestType` of this request wasn't valid.  The request wasn't
+        // intended for us.
+        handler = null;
+    }
+    return handler;
+};
+// Attempt to execute the handler for this request, and record the error
+// for it if anything goes awry:
+var executeRoute = function (handler, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, handler(config)];
+            case 1:
+                response = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                e_1 = _a.sent();
+                response = composeErrorResponse(config.dataKey, e_1.message);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/, response];
+        }
+    });
+}); };
+// Structure an error response:
+var composeErrorResponse = function (dataKey, errorMessage) { return ({
+    type: REQUEST_TYPE_RESPONSE,
+    dataKey: dataKey,
+    error: errorMessage
+}); };
+
+var msInADay = 1000 * 60 * 60 * 24;
+var thirtyYears = msInADay * 365.25 * 30;
+var setWithExpiry = function (key, data, expires) {
+    if (expires === void 0) { expires = thirtyYears; }
+    // Get milliseconds till expiration:
+    var expiry = getMsToLive(expires);
+    if (data === undefined) {
+        throw new Error("Request to set " + key + " contained no data.");
+    }
+    // Package data to save with expiry:
+    var item = {
+        data: data,
+        expiry: expiry
+    };
+    localStorage.setItem(key, JSON.stringify({ item: item }));
+    return getWithExpiry(key);
+};
+var getMsToLive = function (daysToLive) {
+    // LS can't cache 'infinity', so we'll use a placeholder:
+    if (daysToLive === Infinity) {
+        return INFINITY_TOKEN;
+    }
+    // Return the unix epoch at which point the data expires:
+    return Date.now() + (daysToLive * msInADay);
+};
+var getWithExpiry = function (key) {
+    // Retrieve item:
+    var itemStr = localStorage.getItem(key);
+    // If the item doesn't exist, return null
+    if (!itemStr) {
+        return null;
+    }
+    // Unpack and deal with Infinity:
+    var _a = JSON.parse(itemStr).item, data = _a.data, expiry = _a.expiry;
+    if (expiry === INFINITY_TOKEN) {
+        expiry = Infinity;
+    }
+    // Compare the expiry time of the item with the current time:
+    if (Date.now() > expiry) {
+        // If the item is expired, delete the item from storage
+        // and return null:
+        localStorage.removeItem(key);
+        return null;
+    }
+    return data;
+};
+
+/**
+ * This factory wraps the user-defined data getter.  This wrapper
+ * takes care of the data localStorage management for each user-defined
+ * `DataConfig` object passed into `createIframe`.
+ *
+ * One of these endpoints will be created per user-defined localStorage
+ * value.  Each is added to the routes of the iframe, and await calls
+ * from the application.
+ */
+var iframeEndpointFactory = function (_a) {
+    var handler = _a.handler, dataKey = _a.dataKey, expires = _a.expires;
+    // Create the logic that sits at a particular endpoint within
+    // the iframe:
+    var endpoint = function (config) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data, handlerPayload, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if ('resetData' in config && config.resetData) {
+                        // Remove value if dictated by app request:
+                        localStorage.removeItem(dataKey);
+                    }
+                    else {
+                        // Attempt to get cached data:
+                        data = getWithExpiry(dataKey);
+                    }
+                    if (!!data) return [3 /*break*/, 5];
+                    handlerPayload = void 0;
+                    if ('handlerPayload' in config) {
+                        handlerPayload = config.handlerPayload;
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, handler(handlerPayload)];
+                case 2:
+                    data = _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_1 = _a.sent();
+                    throw new Error("Something went wrong in the custom handler for " + dataKey + " data request: " + e_1.message);
+                case 4:
+                    if (data) {
+                        setWithExpiry(dataKey, data, expires);
+                    }
+                    _a.label = 5;
+                case 5:
+                    if (data) {
+                        // If we successfully retrieved the data, relay
+                        // it back to the requesting application:
+                        response = { type: REQUEST_TYPE_RESPONSE, dataKey: dataKey, data: data };
+                    }
+                    else {
+                        // Uh-oh.  No data.  Report this to the
+                        // requesting application:
+                        throw new Error("Failed to retrieve the " + dataKey + " data from the iframe. Please confirm the DataConfig handler returns a value in every case.");
+                    }
+                    return [2 /*return*/, response];
+            }
+        });
+    }); };
+    return endpoint;
+};
+
+var getData = function (_a) {
+    var dataKey = _a.dataKey;
+    return {
+        type: REQUEST_TYPE_RESPONSE,
+        dataKey: dataKey,
+        data: getWithExpiry(dataKey)
+    };
+};
+
+var setData = function (config) {
+    if (!('data' in config)) {
+        throw new Error("Must include a data payload in calls to setData with " + config.dataKey + " dataKey");
+    }
+    var dataKey = config.dataKey, data = config.data;
+    var expires;
+    if ('expires' in config) {
+        expires = config.expires;
+    }
+    var savedDate = setWithExpiry(dataKey, data, expires);
+    return {
+        type: REQUEST_TYPE_RESPONSE,
+        dataKey: config.dataKey,
+        data: savedDate
+    };
+};
+
+var _a;
+/**
+ * In this file, add the getter and setter routes for requests
+ * incoming to the iframe.
+ *
+ * We also create a map of the custom endpoints the user has defined.
+ *
+ * When the iframe receives a request, this route map will allow
+ * the iframe to direct the request to the appropriate user-defined
+ * or default handler for the data type.
+ */
+var routes = (_a = {},
+    _a[REQUEST_TYPE_GET] = getData,
+    _a[REQUEST_TYPE_SET] = setData,
+    _a);
+var createIframeRoutes = function (dataConfigs) { return dataConfigs
+    .reduce(function (routes, dataConfigs) {
+    var dataKey = dataConfigs.dataKey;
+    if (routes[dataKey]) {
+        throw new Error("Multiple modules are attempting to define the " + dataKey + " DataConfig.  Please ensure the configuration for this dataKey is set once per implementation.");
+    }
+    routes[dataKey] = iframeEndpointFactory(dataConfigs);
+    return routes;
+}, routes); };
+
+var createIframe$1 = function (_a) {
+    var dependentDomains = _a.dependentDomains, _b = _a.dataConfigs, dataConfigs = _b === void 0 ? [] : _b;
+    // Create routes for default and custom data getters.
+    var routes = createIframeRoutes(dataConfigs);
+    // Add the local domain to the whitelisted domains by default:
+    dependentDomains.push(getHostname(origin));
+    // Create the listener, which picks up requests, filters
+    // out non-whitelisted domains, and receives data based on
+    // the dataKey of the response:
+    setIframeListener(routes, dependentDomains);
+};
+
+exports.Vz = createIframe$1;
+exports.U2 = get;
+__webpack_unused_export__ = set;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 129:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+
+var has = Object.prototype.hasOwnProperty
+  , undef;
+
+/**
+ * Decode a URI encoded string.
+ *
+ * @param {String} input The URI encoded string.
+ * @returns {String|Null} The decoded string.
+ * @api private
+ */
+function decode(input) {
+  try {
+    return decodeURIComponent(input.replace(/\+/g, ' '));
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Attempts to encode a given input.
+ *
+ * @param {String} input The string that needs to be encoded.
+ * @returns {String|Null} The encoded string.
+ * @api private
+ */
+function encode(input) {
+  try {
+    return encodeURIComponent(input);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Simple query string parser.
+ *
+ * @param {String} query The query string that needs to be parsed.
+ * @returns {Object}
+ * @api public
+ */
+function querystring(query) {
+  var parser = /([^=?#&]+)=?([^&]*)/g
+    , result = {}
+    , part;
+
+  while (part = parser.exec(query)) {
+    var key = decode(part[1])
+      , value = decode(part[2]);
+
+    //
+    // Prevent overriding of existing properties. This ensures that build-in
+    // methods like `toString` or __proto__ are not overriden by malicious
+    // querystrings.
+    //
+    // In the case if failed decoding, we want to omit the key/value pairs
+    // from the result.
+    //
+    if (key === null || value === null || key in result) continue;
+    result[key] = value;
+  }
+
+  return result;
+}
+
+/**
+ * Transform a query string to an object.
+ *
+ * @param {Object} obj Object that should be transformed.
+ * @param {String} prefix Optional prefix.
+ * @returns {String}
+ * @api public
+ */
+function querystringify(obj, prefix) {
+  prefix = prefix || '';
+
+  var pairs = []
+    , value
+    , key;
+
+  //
+  // Optionally prefix with a '?' if needed
+  //
+  if ('string' !== typeof prefix) prefix = '?';
+
+  for (key in obj) {
+    if (has.call(obj, key)) {
+      value = obj[key];
+
+      //
+      // Edge cases where we actually want to encode the value to an empty
+      // string instead of the stringified value.
+      //
+      if (!value && (value === null || value === undef || isNaN(value))) {
+        value = '';
+      }
+
+      key = encode(key);
+      value = encode(value);
+
+      //
+      // If we failed to encode the strings, we should bail out as we don't
+      // want to add invalid strings to the query.
+      //
+      if (key === null || value === null) continue;
+      pairs.push(key +'='+ value);
+    }
+  }
+
+  return pairs.length ? prefix + pairs.join('&') : '';
+}
+
+//
+// Expose the module.
+//
+exports.stringify = querystringify;
+exports.parse = querystring;
+
+
+/***/ }),
+
+/***/ 418:
+/***/ ((module) => {
+
+
+
+/**
+ * Check if we're required to add a port number.
+ *
+ * @see https://url.spec.whatwg.org/#default-port
+ * @param {Number|String} port Port number we need to check
+ * @param {String} protocol Protocol we need to check against.
+ * @returns {Boolean} Is it a default port for the given protocol
+ * @api private
+ */
+module.exports = function required(port, protocol) {
+  protocol = protocol.split(':')[0];
+  port = +port;
+
+  if (!port) return false;
+
+  switch (protocol) {
+    case 'http':
+    case 'ws':
+    return port !== 80;
+
+    case 'https':
+    case 'wss':
+    return port !== 443;
+
+    case 'ftp':
+    return port !== 21;
+
+    case 'gopher':
+    return port !== 70;
+
+    case 'file':
+    return false;
+  }
+
+  return port !== 0;
+};
+
+
+/***/ }),
+
+/***/ 564:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+
+var required = __webpack_require__(418)
+  , qs = __webpack_require__(129)
+  , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:[\\/]+/
+  , protocolre = /^([a-z][a-z0-9.+-]*:)?([\\/]{1,})?([\S\s]*)/i
+  , whitespace = '[\\x09\\x0A\\x0B\\x0C\\x0D\\x20\\xA0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF]'
+  , left = new RegExp('^'+ whitespace +'+');
+
+/**
+ * Trim a given string.
+ *
+ * @param {String} str String to trim.
+ * @public
+ */
+function trimLeft(str) {
+  return (str ? str : '').toString().replace(left, '');
+}
+
+/**
+ * These are the parse rules for the URL parser, it informs the parser
+ * about:
+ *
+ * 0. The char it Needs to parse, if it's a string it should be done using
+ *    indexOf, RegExp using exec and NaN means set as current value.
+ * 1. The property we should set when parsing this value.
+ * 2. Indication if it's backwards or forward parsing, when set as number it's
+ *    the value of extra chars that should be split off.
+ * 3. Inherit from location if non existing in the parser.
+ * 4. `toLowerCase` the resulting value.
+ */
+var rules = [
+  ['#', 'hash'],                        // Extract from the back.
+  ['?', 'query'],                       // Extract from the back.
+  function sanitize(address) {          // Sanitize what is left of the address
+    return address.replace('\\', '/');
+  },
+  ['/', 'pathname'],                    // Extract from the back.
+  ['@', 'auth', 1],                     // Extract from the front.
+  [NaN, 'host', undefined, 1, 1],       // Set left over value.
+  [/:(\d+)$/, 'port', undefined, 1],    // RegExp the back.
+  [NaN, 'hostname', undefined, 1, 1]    // Set left over.
+];
+
+/**
+ * These properties should not be copied or inherited from. This is only needed
+ * for all non blob URL's as a blob URL does not include a hash, only the
+ * origin.
+ *
+ * @type {Object}
+ * @private
+ */
+var ignore = { hash: 1, query: 1 };
+
+/**
+ * The location object differs when your code is loaded through a normal page,
+ * Worker or through a worker using a blob. And with the blobble begins the
+ * trouble as the location object will contain the URL of the blob, not the
+ * location of the page where our code is loaded in. The actual origin is
+ * encoded in the `pathname` so we can thankfully generate a good "default"
+ * location from it so we can generate proper relative URL's again.
+ *
+ * @param {Object|String} loc Optional default location object.
+ * @returns {Object} lolcation object.
+ * @public
+ */
+function lolcation(loc) {
+  var globalVar;
+
+  if (typeof window !== 'undefined') globalVar = window;
+  else if (typeof __webpack_require__.g !== 'undefined') globalVar = __webpack_require__.g;
+  else if (typeof self !== 'undefined') globalVar = self;
+  else globalVar = {};
+
+  var location = globalVar.location || {};
+  loc = loc || location;
+
+  var finaldestination = {}
+    , type = typeof loc
+    , key;
+
+  if ('blob:' === loc.protocol) {
+    finaldestination = new Url(unescape(loc.pathname), {});
+  } else if ('string' === type) {
+    finaldestination = new Url(loc, {});
+    for (key in ignore) delete finaldestination[key];
+  } else if ('object' === type) {
+    for (key in loc) {
+      if (key in ignore) continue;
+      finaldestination[key] = loc[key];
+    }
+
+    if (finaldestination.slashes === undefined) {
+      finaldestination.slashes = slashes.test(loc.href);
+    }
+  }
+
+  return finaldestination;
+}
+
+/**
+ * @typedef ProtocolExtract
+ * @type Object
+ * @property {String} protocol Protocol matched in the URL, in lowercase.
+ * @property {Boolean} slashes `true` if protocol is followed by "//", else `false`.
+ * @property {String} rest Rest of the URL that is not part of the protocol.
+ */
+
+/**
+ * Extract protocol information from a URL with/without double slash ("//").
+ *
+ * @param {String} address URL we want to extract from.
+ * @return {ProtocolExtract} Extracted information.
+ * @private
+ */
+function extractProtocol(address) {
+  address = trimLeft(address);
+
+  var match = protocolre.exec(address)
+    , protocol = match[1] ? match[1].toLowerCase() : ''
+    , slashes = !!(match[2] && match[2].length >= 2)
+    , rest =  match[2] && match[2].length === 1 ? '/' + match[3] : match[3];
+
+  return {
+    protocol: protocol,
+    slashes: slashes,
+    rest: rest
+  };
+}
+
+/**
+ * Resolve a relative URL pathname against a base URL pathname.
+ *
+ * @param {String} relative Pathname of the relative URL.
+ * @param {String} base Pathname of the base URL.
+ * @return {String} Resolved pathname.
+ * @private
+ */
+function resolve(relative, base) {
+  if (relative === '') return base;
+
+  var path = (base || '/').split('/').slice(0, -1).concat(relative.split('/'))
+    , i = path.length
+    , last = path[i - 1]
+    , unshift = false
+    , up = 0;
+
+  while (i--) {
+    if (path[i] === '.') {
+      path.splice(i, 1);
+    } else if (path[i] === '..') {
+      path.splice(i, 1);
+      up++;
+    } else if (up) {
+      if (i === 0) unshift = true;
+      path.splice(i, 1);
+      up--;
+    }
+  }
+
+  if (unshift) path.unshift('');
+  if (last === '.' || last === '..') path.push('');
+
+  return path.join('/');
+}
+
+/**
+ * The actual URL instance. Instead of returning an object we've opted-in to
+ * create an actual constructor as it's much more memory efficient and
+ * faster and it pleases my OCD.
+ *
+ * It is worth noting that we should not use `URL` as class name to prevent
+ * clashes with the global URL instance that got introduced in browsers.
+ *
+ * @constructor
+ * @param {String} address URL we want to parse.
+ * @param {Object|String} [location] Location defaults for relative paths.
+ * @param {Boolean|Function} [parser] Parser for the query string.
+ * @private
+ */
+function Url(address, location, parser) {
+  address = trimLeft(address);
+
+  if (!(this instanceof Url)) {
+    return new Url(address, location, parser);
+  }
+
+  var relative, extracted, parse, instruction, index, key
+    , instructions = rules.slice()
+    , type = typeof location
+    , url = this
+    , i = 0;
+
+  //
+  // The following if statements allows this module two have compatibility with
+  // 2 different API:
+  //
+  // 1. Node.js's `url.parse` api which accepts a URL, boolean as arguments
+  //    where the boolean indicates that the query string should also be parsed.
+  //
+  // 2. The `URL` interface of the browser which accepts a URL, object as
+  //    arguments. The supplied object will be used as default values / fall-back
+  //    for relative paths.
+  //
+  if ('object' !== type && 'string' !== type) {
+    parser = location;
+    location = null;
+  }
+
+  if (parser && 'function' !== typeof parser) parser = qs.parse;
+
+  location = lolcation(location);
+
+  //
+  // Extract protocol information before running the instructions.
+  //
+  extracted = extractProtocol(address || '');
+  relative = !extracted.protocol && !extracted.slashes;
+  url.slashes = extracted.slashes || relative && location.slashes;
+  url.protocol = extracted.protocol || location.protocol || '';
+  address = extracted.rest;
+
+  //
+  // When the authority component is absent the URL starts with a path
+  // component.
+  //
+  if (!extracted.slashes) instructions[3] = [/(.*)/, 'pathname'];
+
+  for (; i < instructions.length; i++) {
+    instruction = instructions[i];
+
+    if (typeof instruction === 'function') {
+      address = instruction(address);
+      continue;
+    }
+
+    parse = instruction[0];
+    key = instruction[1];
+
+    if (parse !== parse) {
+      url[key] = address;
+    } else if ('string' === typeof parse) {
+      if (~(index = address.indexOf(parse))) {
+        if ('number' === typeof instruction[2]) {
+          url[key] = address.slice(0, index);
+          address = address.slice(index + instruction[2]);
+        } else {
+          url[key] = address.slice(index);
+          address = address.slice(0, index);
+        }
+      }
+    } else if ((index = parse.exec(address))) {
+      url[key] = index[1];
+      address = address.slice(0, index.index);
+    }
+
+    url[key] = url[key] || (
+      relative && instruction[3] ? location[key] || '' : ''
+    );
+
+    //
+    // Hostname, host and protocol should be lowercased so they can be used to
+    // create a proper `origin`.
+    //
+    if (instruction[4]) url[key] = url[key].toLowerCase();
+  }
+
+  //
+  // Also parse the supplied query string in to an object. If we're supplied
+  // with a custom parser as function use that instead of the default build-in
+  // parser.
+  //
+  if (parser) url.query = parser(url.query);
+
+  //
+  // If the URL is relative, resolve the pathname against the base URL.
+  //
+  if (
+      relative
+    && location.slashes
+    && url.pathname.charAt(0) !== '/'
+    && (url.pathname !== '' || location.pathname !== '')
+  ) {
+    url.pathname = resolve(url.pathname, location.pathname);
+  }
+
+  //
+  // Default to a / for pathname if none exists. This normalizes the URL
+  // to always have a /
+  //
+  if (url.pathname.charAt(0) !== '/' && url.hostname) {
+    url.pathname = '/' + url.pathname;
+  }
+
+  //
+  // We should not add port numbers if they are already the default port number
+  // for a given protocol. As the host also contains the port number we're going
+  // override it with the hostname which contains no port number.
+  //
+  if (!required(url.port, url.protocol)) {
+    url.host = url.hostname;
+    url.port = '';
+  }
+
+  //
+  // Parse down the `auth` for the username and password.
+  //
+  url.username = url.password = '';
+  if (url.auth) {
+    instruction = url.auth.split(':');
+    url.username = instruction[0] || '';
+    url.password = instruction[1] || '';
+  }
+
+  url.origin = url.protocol && url.host && url.protocol !== 'file:'
+    ? url.protocol +'//'+ url.host
+    : 'null';
+
+  //
+  // The href is just the compiled result.
+  //
+  url.href = url.toString();
+}
+
+/**
+ * This is convenience method for changing properties in the URL instance to
+ * insure that they all propagate correctly.
+ *
+ * @param {String} part          Property we need to adjust.
+ * @param {Mixed} value          The newly assigned value.
+ * @param {Boolean|Function} fn  When setting the query, it will be the function
+ *                               used to parse the query.
+ *                               When setting the protocol, double slash will be
+ *                               removed from the final url if it is true.
+ * @returns {URL} URL instance for chaining.
+ * @public
+ */
+function set(part, value, fn) {
+  var url = this;
+
+  switch (part) {
+    case 'query':
+      if ('string' === typeof value && value.length) {
+        value = (fn || qs.parse)(value);
+      }
+
+      url[part] = value;
+      break;
+
+    case 'port':
+      url[part] = value;
+
+      if (!required(value, url.protocol)) {
+        url.host = url.hostname;
+        url[part] = '';
+      } else if (value) {
+        url.host = url.hostname +':'+ value;
+      }
+
+      break;
+
+    case 'hostname':
+      url[part] = value;
+
+      if (url.port) value += ':'+ url.port;
+      url.host = value;
+      break;
+
+    case 'host':
+      url[part] = value;
+
+      if (/:\d+$/.test(value)) {
+        value = value.split(':');
+        url.port = value.pop();
+        url.hostname = value.join(':');
+      } else {
+        url.hostname = value;
+        url.port = '';
+      }
+
+      break;
+
+    case 'protocol':
+      url.protocol = value.toLowerCase();
+      url.slashes = !fn;
+      break;
+
+    case 'pathname':
+    case 'hash':
+      if (value) {
+        var char = part === 'pathname' ? '/' : '#';
+        url[part] = value.charAt(0) !== char ? char + value : value;
+      } else {
+        url[part] = value;
+      }
+      break;
+
+    default:
+      url[part] = value;
+  }
+
+  for (var i = 0; i < rules.length; i++) {
+    var ins = rules[i];
+
+    if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCase();
+  }
+
+  url.origin = url.protocol && url.host && url.protocol !== 'file:'
+    ? url.protocol +'//'+ url.host
+    : 'null';
+
+  url.href = url.toString();
+
+  return url;
+}
+
+/**
+ * Transform the properties back in to a valid and full URL string.
+ *
+ * @param {Function} stringify Optional query stringify function.
+ * @returns {String} Compiled version of the URL.
+ * @public
+ */
+function toString(stringify) {
+  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
+
+  var query
+    , url = this
+    , protocol = url.protocol;
+
+  if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
+
+  var result = protocol + (url.slashes ? '//' : '');
+
+  if (url.username) {
+    result += url.username;
+    if (url.password) result += ':'+ url.password;
+    result += '@';
+  }
+
+  result += url.host + url.pathname;
+
+  query = 'object' === typeof url.query ? stringify(url.query) : url.query;
+  if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
+
+  if (url.hash) result += url.hash;
+
+  return result;
+}
+
+Url.prototype = { set: set, toString: toString };
+
+//
+// Expose the URL parser and some additional properties that might be useful for
+// others or testing.
+//
+Url.extractProtocol = extractProtocol;
+Url.location = lolcation;
+Url.trimLeft = trimLeft;
+Url.qs = qs;
+
+module.exports = Url;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+/* harmony import */ var cookie_toss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(200);
+
+window.toss = {
+    createIframe: cookie_toss__WEBPACK_IMPORTED_MODULE_0__/* .createIframe */ .Vz,
+    get: cookie_toss__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U2
+};
+
+})();
+
+/******/ })()
+;
