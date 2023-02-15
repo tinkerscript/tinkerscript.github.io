@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>catpants</title>
+</head>
+
+<body>
+    <script type="text/javascript" src="https://vk.com/js/api/openapi.js?168" charset="windows-1251"></script>
+
+    <div id="vk_auth"></div>
+    <script type="text/javascript">
+        window.onload = function () {
+            VK.init({ apiId: 7794785 });
+            VK.Widgets.Auth('vk_auth', {
+                onAuth: (...args) => {
+                    console.log(args);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
