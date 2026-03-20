@@ -110,23 +110,22 @@
     letter-spacing: -0.02em;
   }
 
-  
   .coords {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
   }
 
   .coord-row {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
   }
 
-  .coord-controls {
+  .coord-labels {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: baseline;
   }
 
   .slider-label {
@@ -136,15 +135,21 @@
     text-transform: uppercase;
     color: var(--accent);
     white-space: nowrap;
-    min-width: 0;
     flex-shrink: 0;
   }
 
   .slider-label.neg { opacity: 0.4; }
 
-  
+  .coord-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
   input[type=range] {
     flex: 1;
+    min-width: 0;
     -webkit-appearance: none;
     height: 2px;
     background: var(--border);
@@ -170,14 +175,15 @@
 
   
   input[type=number] {
-    width: 72px;
+    width: 58px;
+    flex-shrink: 0;
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    padding: 6px 8px;
+    padding: 6px 6px;
     border-radius: 4px;
     text-align: right;
     outline: none;
@@ -608,10 +614,12 @@ AXES.forEach(axis => {
   const row = document.createElement('div');
   row.className = 'coord-row';
   row.innerHTML = `
-    <div class="coord-controls">
+    <div class="coord-labels">
       <span class="slider-label neg">${axis.neg.label}</span>
-      <input type="range" id="s${axis.id}" min="-100" max="100" step="0.1" value="0">
       <span class="slider-label">${axis.pos.label}</span>
+    </div>
+    <div class="coord-controls">
+      <input type="range" id="s${axis.id}" min="-100" max="100" step="0.1" value="0">
       <input type="number" id="n${axis.id}" min="-100" max="100" step="0.1" value="0">
     </div>`;
   coordsEl.appendChild(row);
