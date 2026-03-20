@@ -412,7 +412,7 @@ function resize() {
   camera.updateProjectionMatrix();
 }
 window.addEventListener('resize', resize);
-resize();
+requestAnimationFrame(resize);
 
 const S = 100; 
 const N = 10;  
