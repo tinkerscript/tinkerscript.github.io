@@ -73,22 +73,45 @@
       width: 20px; height: 20px;
     }
 
-    input[type=number] {
-      width: 60px;
-      font-size: 12px;
-      padding: 8px 6px;
-    }
-
     input[type=number] { display: none; }
 
     .canvas-hint { font-size: 9px; bottom: 10px; right: 12px; }
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .panel-text {
     font-size: 11px;
     line-height: 1.7;
     color: var(--muted);
+    flex: 1;
   }
+
+  .info-btn {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--muted);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Unbounded', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    font-style: normal;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+    padding: 0;
+    line-height: 1;
+  }
+  .info-btn:hover { border-color: var(--accent); color: var(--accent); }
 
   .coords {
     display: flex;
@@ -307,7 +330,10 @@
 <div id="app">
   
   <div id="panel">
-    <div class="panel-text">Задавайте свои координаты</div>
+    <div class="panel-header">
+      <div class="panel-text">Задавайте свои координаты</div>
+      <button class="info-btn" id="info-btn" title="Информация">i</button>
+    </div>
     <div class="coords" id="coords"></div>
 
     
@@ -462,9 +488,10 @@ const GRID_FACES = [
 ];
 GRID_FACES.forEach(([u, v, w]) => scene.add(makeGridFace(u, v, w)));
 
+const AXIS_DIRS = [[1,0,0],[0,1,0],[0,0,1]];
+
 function makeCentralAxis(axisIndex, color) {
-  const dirs = [[1,0,0],[0,1,0],[0,0,1]];
-  const d = dirs[axisIndex];
+  const d = AXIS_DIRS[axisIndex];
   const positions = new Float32Array([-d[0]*S, -d[1]*S, -d[2]*S, d[0]*S, d[1]*S, d[2]*S]);
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -474,6 +501,15 @@ function makeCentralAxis(axisIndex, color) {
 
 AXES.forEach((axis, i) => {
   scene.add(makeCentralAxis(i, axis.color));
+
+  const d = AXIS_DIRS[i];
+  const geo = new THREE.SphereGeometry(2, 12, 12);
+  const mat = new THREE.MeshBasicMaterial({ color: axis.color });
+  [-1, 1].forEach(sign => {
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(d[0]*S*sign, d[1]*S*sign, d[2]*S*sign);
+    scene.add(mesh);
+  });
 });
 
 function makeLabel(text, pos, color) {
@@ -898,6 +934,13 @@ document.getElementById('copy-btn').addEventListener('click', () => {
     document.body.removeChild(ta);
     showCopied();
   }
+});
+
+document.getElementById('info-btn').addEventListener('click', () => {
+  showPopup({
+    label: 'Инфо',
+    desc: 'Интерактивный инструмент для выбора точки в трёхмерном пространстве, где оси подписаны смысловыми понятиями, а куб раскрашен в цвета RGB. Координаты точки кодируются в URL и могут быть сохранены или переданы. Три оси: Психоз–Невроз (R), Кринж–Дрип (G), Суверенность–Престиж (B).',
+  });
 });
 
 document.getElementById('toggle-points').addEventListener('change', e => {
