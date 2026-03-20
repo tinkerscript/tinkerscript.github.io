@@ -15,9 +15,6 @@
     --bg: #0a0a0f;
     --panel: #11111a;
     --border: #1e1e30;
-    --x: #ff4466;
-    --y: #44ff88;
-    --z: #448aff;
     --text: #e0e0f0;
     --muted: #555570;
     --accent: #ffffff;
@@ -81,8 +78,6 @@
       padding: 8px 6px;
     }
 
-    .share-url { font-size: 9px; }
-
     .copy-btn { font-size: 10px; padding: 10px 14px; }
 
     .canvas-hint { font-size: 9px; bottom: 10px; right: 12px; }
@@ -95,19 +90,6 @@
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--muted);
-  }
-
-  .logo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .logo h1 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: -0.02em;
   }
 
   .coords {
@@ -157,10 +139,6 @@
     outline: none;
     cursor: pointer;
   }
-  input[type=range].x { --c: var(--x); }
-  input[type=range].y { --c: var(--y); }
-  input[type=range].z { --c: var(--z); }
-
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 14px; height: 14px;
@@ -192,54 +170,8 @@
   }
   input[type=number]::-webkit-inner-spin-button { display: none; }
   input[type=number]:focus { border-color: var(--muted); }
-  input[type=number].x:focus { border-color: var(--x); }
-  input[type=number].y:focus { border-color: var(--y); }
-  input[type=number].z:focus { border-color: var(--z); }
 
-  
-  .readout {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .readout-line {
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .readout-line span:first-child { color: var(--muted); }
-  .readout-val { font-weight: 600; color: var(--accent); }
-
-  
-  .distance {
-    margin-top: 4px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-  }
-  .distance span:first-child { color: var(--muted); }
-  .distance-val { color: #ffcc44; font-weight: 600; }
-
-  
   .share-section { display: flex; flex-direction: column; gap: 10px; }
-
-  .share-url {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 10px;
-    color: var(--muted);
-    word-break: break-all;
-    line-height: 1.5;
-    min-height: 40px;
-  }
 
   .copy-btn {
     background: transparent;
@@ -255,12 +187,51 @@
     text-transform: uppercase;
   }
   .copy-btn:hover { background: var(--border); }
-  .copy-btn.copied { border-color: var(--y); color: var(--y); }
+  .copy-btn.copied { border-color: #44ff88; color: #44ff88; }
 
   
   #canvas-wrap {
     position: relative;
     overflow: hidden;
+  }
+
+  #pole-popup {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #pole-popup.visible {
+    display: flex;
+    pointer-events: all;
+  }
+  #pole-popup-inner {
+    background: rgba(10, 10, 15, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    max-width: 380px;
+    width: calc(100% - 48px);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: all;
+  }
+  #pole-popup-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  #pole-popup-desc {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text);
+    opacity: 0.8;
   }
   #three-canvas {
     display: block;
@@ -292,8 +263,6 @@
 
     
     <div class="share-section">
-      <div class="panel-title">Поделиться</div>
-      <div class="share-url" id="share-url"></div>
       <button class="copy-btn" id="copy-btn">Скопировать ссылку</button>
     </div>
   </div>
@@ -302,6 +271,12 @@
   <div id="canvas-wrap">
     <canvas id="three-canvas"></canvas>
     <div class="canvas-hint">ЛКМ / палец — вращение · Колесо / щипок — зум</div>
+    <div id="pole-popup">
+      <div id="pole-popup-inner">
+        <div id="pole-popup-title"></div>
+        <div id="pole-popup-desc"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -310,20 +285,20 @@
 const AXES = [
   {
     id: 'x',
-    neg: { label: 'ПСИХОЗ' },
-    pos: { label: 'НЕВРОЗ' },
+    neg: { label: 'ПСИХОЗ', desc: 'Психотик постоянно шагает в бездну, но каждый раз промахивается, что вынуждает его жить в перманентной ажитации, балансировать на грани между фрустрацией и эйфорией. Он застрял посреди бескрайней равнодушной данности, безучастной к его мыслям и чувствам.' },
+    pos: { label: 'НЕВРОЗ', desc: 'Невротик пытается скрыться, возвести стены, отгородиться от ужаса небытия, который всё равно проникает в его вымышленную реальность через сны, оговорки и навязчивые мысли. Для него окружающий мир соткан из символов, образов и правил, о смысле которых страшно подумать.' },
     rgb: 'R',
   },
   {
     id: 'y',
-    neg: { label: 'КРИНЖ' },
-    pos: { label: 'ДРИП' },
+    neg: { label: 'КРИНЖ', desc: 'Кринж — это определённый подход к эстетике существования, использующий несоответствия между конструкцией и композицией. Термин не несёт уничижительного смысла. Одним из самых ярких его примеров является классическая опера.' },
+    pos: { label: 'ДРИП',  desc: 'Дрип — максимизация тектоничности. Стиль включения в стратегию реализации базовой интенции, при котором все элементы существования направлены на достижение максимальной органичности и цельности.' },
     rgb: 'G',
   },
   {
     id: 'z',
-    neg: { label: 'СУВЕРЕННОСТЬ' },
-    pos: { label: 'ПРЕСТИЖ' },
+    neg: { label: 'СУВЕРЕННОСТЬ', desc: 'Суверенность — имманентные стратегии обращения к себе и радикальной театрализации, которые отрицают онтологический статус трансцендентного. Суверенный тип пересоздаёт самого себя, работая с собой напрямую.' },
+    pos: { label: 'ПРЕСТИЖ',      desc: 'Престиж — взаимодействие с Реальным через обращение к трансцендентному Абстрактному Папочке: гипостазированному идеалу, верифицирующему интенцию. Его разновидностями являются образы государства, традиции, классового сознания, нации, идеологии.' },
     rgb: 'B',
   },
 ];
@@ -398,16 +373,33 @@ function makeGridFace(uAxis, vAxis, wVal) {
 }
 
 scene.add(makeGridFace(0, 2, -S));
-
 scene.add(makeGridFace(0, 2,  S));
-
 scene.add(makeGridFace(1, 2, -S));
-
 scene.add(makeGridFace(1, 2,  S));
-
 scene.add(makeGridFace(0, 1, -S));
-
 scene.add(makeGridFace(0, 1,  S));
+
+function makeCentralAxis(axis, colorNeg, colorPos) {
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(6);
+  const colors = new Float32Array(6);
+  const dirs = [[1,0,0],[0,1,0],[0,0,1]];
+  const d = dirs[axis];
+  positions.set([-d[0]*S, -d[1]*S, -d[2]*S], 0);
+  positions.set([ d[0]*S,  d[1]*S,  d[2]*S], 3);
+  const cn = new THREE.Color(colorNeg);
+  const cp = new THREE.Color(colorPos);
+  colors.set([cn.r, cn.g, cn.b], 0);
+  colors.set([cp.r, cp.g, cp.b], 3);
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
+  const mat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.6, linewidth: 1 });
+  return new THREE.Line(geo, mat);
+}
+
+scene.add(makeCentralAxis(0, '#220000', '#ff0000'));
+scene.add(makeCentralAxis(1, '#002200', '#00ff00'));
+scene.add(makeCentralAxis(2, '#000022', '#0000ff'));
 
 function makeLabel(text, pos, color) {
   const padding = 20;
@@ -445,6 +437,8 @@ function makeLabel(text, pos, color) {
   return sprite;
 }
 
+const labelSprites = [];
+
 const axisVectors = [
   new THREE.Vector3(1, 0, 0),
   new THREE.Vector3(0, 1, 0),
@@ -452,14 +446,70 @@ const axisVectors = [
 ];
 AXES.forEach((axis, i) => {
   const dir = axisVectors[i];
-  scene.add(makeLabel(axis.pos.label, dir.clone().multiplyScalar(128), '#ffffff'));
-  scene.add(makeLabel(axis.neg.label, dir.clone().multiplyScalar(-128), '#ffffff'));
+  const posSprite = makeLabel(axis.pos.label, dir.clone().multiplyScalar(128), '#ffffff');
+  const negSprite = makeLabel(axis.neg.label, dir.clone().multiplyScalar(-128), '#ffffff');
+  posSprite.userData = { label: axis.pos.label, desc: axis.pos.desc };
+  negSprite.userData = { label: axis.neg.label, desc: axis.neg.desc };
+  scene.add(posSprite);
+  scene.add(negSprite);
+  labelSprites.push(posSprite, negSprite);
 });
 
 const originGeo = new THREE.SphereGeometry(1.5, 16, 16);
 const originMat = new THREE.MeshBasicMaterial({ color: 0x333355 });
 scene.add(new THREE.Mesh(originGeo, originMat));
 
+const PREDEFINED_POINTS = [
+  { x: -100, y:  100, z: -100, label: 'Уличный самурай', desc: 'Суверенно-психотический дрип. Уличные самураи. 😎👌🏻' },
+  { x:   86, y:  -38, z:   30, label: 'Random',           desc: 'Здесь может быть ваше описание.' },
+];
+
+function colorFromCoords(x, y, z) {
+  return new THREE.Color(norm(x), norm(y), norm(z));
+}
+
+function makePredefGlow(hexColor) {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 128;
+  const ctx = c.getContext('2d');
+  const col = new THREE.Color(hexColor);
+  const r = Math.round(col.r * 255);
+  const gv = Math.round(col.g * 255);
+  const b = Math.round(col.b * 255);
+  const gr = ctx.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,   `rgba(${r},${gv},${b},0.75)`);
+  gr.addColorStop(0.4, `rgba(${r},${gv},${b},0.2)`);
+  gr.addColorStop(1,   `rgba(${r},${gv},${b},0)`);
+  ctx.fillStyle = gr;
+  ctx.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  const s = new THREE.Sprite(mat);
+  s.scale.set(24, 24, 1);
+  return s;
+}
+
+PREDEFINED_POINTS.forEach(pt => {
+  const col = colorFromCoords(pt.x, pt.y, pt.z);
+  const hexColor = '#' + col.getHexString();
+
+  const geo = new THREE.SphereGeometry(2.5, 24, 24);
+  const mat = new THREE.MeshBasicMaterial({ color: col });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(pt.x, pt.y, pt.z);
+  mesh.userData = { label: pt.label, desc: pt.desc };
+  scene.add(mesh);
+  labelSprites.push(mesh);
+
+  const g = makePredefGlow(hexColor);
+  g.position.set(pt.x, pt.y, pt.z);
+  scene.add(g);
+
+  const sprite = makeLabel(pt.label, new THREE.Vector3(pt.x, pt.y + 14, pt.z), hexColor);
+  sprite.userData = { label: pt.label, desc: pt.desc };
+  scene.add(sprite);
+  labelSprites.push(sprite);
+});
 const pointGeo = new THREE.SphereGeometry(3, 32, 32);
 const pointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const pointMesh = new THREE.Mesh(pointGeo, pointMat);
@@ -521,6 +571,58 @@ function updateScene() {
   setLinePoints(projY, new THREE.Vector3(x,0,z), new THREE.Vector3(x,y,z));
   setLinePoints(projZ, new THREE.Vector3(x,y,0), new THREE.Vector3(x,y,z));
 }
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const popup = document.getElementById('pole-popup');
+const popupTitle = document.getElementById('pole-popup-title');
+const popupDesc = document.getElementById('pole-popup-desc');
+
+function showPopup(label, desc) {
+  popupTitle.textContent = label;
+  popupDesc.textContent = desc;
+  popup.classList.add('visible');
+}
+
+function hidePopup() {
+  popup.classList.remove('visible');
+}
+
+let pointerMoved = false;
+let pointerDownX = 0;
+let pointerDownY = 0;
+
+canvas.addEventListener('pointerdown', e => {
+  pointerMoved = false;
+  pointerDownX = e.clientX;
+  pointerDownY = e.clientY;
+});
+
+canvas.addEventListener('pointermove', e => {
+  const dx = e.clientX - pointerDownX;
+  const dy = e.clientY - pointerDownY;
+  if (Math.hypot(dx, dy) > 6) pointerMoved = true;
+});
+
+canvas.addEventListener('pointerup', e => {
+  if (pointerMoved) return;
+  const rect = canvas.getBoundingClientRect();
+  mouse.x =  ((e.clientX - rect.left)  / rect.width)  * 2 - 1;
+  mouse.y = -((e.clientY - rect.top)   / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(labelSprites);
+  if (hits.length > 0) {
+    const { label, desc } = hits[0].object.userData;
+    showPopup(label, desc);
+  }
+});
+
+popup.addEventListener('click', e => {
+  if (e.target === popup) hidePopup();
+});
+popup.addEventListener('touchend', e => {
+  if (e.target === popup) hidePopup();
+});
 
 const isMobile = window.innerWidth <= 640;
 let orbit = { active: false, button: -1, lastX: 0, lastY: 0,
@@ -639,7 +741,6 @@ function syncUI() {
   });
   updateScene();
   updateURL();
-  updateShareDisplay();
 }
 
 AXES.forEach(axis => {
@@ -653,7 +754,6 @@ AXES.forEach(axis => {
     document.getElementById('s' + axis.id).value = v;
     updateScene();
     updateURL();
-    updateShareDisplay();
   });
   document.getElementById('n' + axis.id).addEventListener('change', e => {
     let v = parseFloat(e.target.value);
@@ -662,12 +762,6 @@ AXES.forEach(axis => {
     syncUI();
   });
 });
-
-function updateShareDisplay() {
-  const p = new URLSearchParams();
-  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
-  document.getElementById('share-url').textContent = `${location.origin}${location.pathname}?${p.toString()}`;
-}
 
 let urlUpdateTimer = null;
 function updateURL() {
