@@ -79,8 +79,6 @@
       padding: 8px 6px;
     }
 
-    .copy-btn { font-size: 10px; padding: 10px 14px; }
-
     .canvas-hint { font-size: 9px; bottom: 10px; right: 12px; }
   }
 
@@ -169,20 +167,70 @@
   input[type=number]::-webkit-inner-spin-button { display: none; }
   input[type=number]:focus { border-color: var(--muted); }
 
-  .share-section { display: flex; flex-direction: column; gap: 10px; }
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-row input[type=checkbox] { display: none; }
+
+  .toggle-track {
+    width: 32px;
+    height: 18px;
+    border-radius: 9px;
+    background: var(--border);
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .toggle-row input:checked + .toggle-track { background: #1e1e40; }
+  .toggle-row input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(14px);
+    background: var(--accent);
+  }
+
+  .toggle-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .controls-row .copy-btn { margin-left: auto; }
 
   .copy-btn {
     background: transparent;
     border: 1px solid var(--border);
-    color: var(--text);
+    color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    padding: 8px 14px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s, color 0.2s;
-    text-transform: uppercase;
+    white-space: nowrap;
   }
   .copy-btn:hover { background: var(--border); }
   .copy-btn.copied { border-color: #44ff88; color: #44ff88; }
@@ -261,8 +309,18 @@
     <div class="coords" id="coords"></div>
 
     
-    <div class="share-section">
-      <button class="copy-btn" id="copy-btn">Скопировать ссылку</button>
+    <div class="controls-row">
+      <label class="toggle-row">
+        <input type="checkbox" id="toggle-points" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">Точки</span>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="toggle-labels" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">Оси</span>
+      </label>
+      <button class="copy-btn" id="copy-btn" title="Скопировать ссылку">Ссылка</button>
     </div>
   </div>
 
@@ -374,40 +432,46 @@ function makeGridFace(uAxis, vAxis, wVal) {
   return new THREE.LineSegments(geo, mat);
 }
 
-scene.add(makeGridFace(0, 2, -S));
-scene.add(makeGridFace(0, 2,  S));
-scene.add(makeGridFace(1, 2, -S));
-scene.add(makeGridFace(1, 2,  S));
-scene.add(makeGridFace(0, 1, -S));
-scene.add(makeGridFace(0, 1,  S));
+function makeGlow(hexColor, size = 30) {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 128;
+  const ctx = c.getContext('2d');
+  const col = new THREE.Color(hexColor);
+  const r = Math.round(col.r * 255);
+  const gv = Math.round(col.g * 255);
+  const b = Math.round(col.b * 255);
+  const g = ctx.createRadialGradient(64,64,0,64,64,64);
+  g.addColorStop(0,   `rgba(${r},${gv},${b},0.8)`);
+  g.addColorStop(0.4, `rgba(${r},${gv},${b},0.27)`);
+  g.addColorStop(1,   `rgba(${r},${gv},${b},0)`);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  const s = new THREE.Sprite(mat);
+  s.scale.set(size, size, 1);
+  return s;
+}
 
-function makeCentralAxis(axisIndex, colorNeg, colorPos) {
+const GRID_FACES = [
+  [0, 2, -S], [0, 2, S],
+  [1, 2, -S], [1, 2, S],
+  [0, 1, -S], [0, 1, S],
+];
+GRID_FACES.forEach(([u, v, w]) => scene.add(makeGridFace(u, v, w)));
+
+function makeCentralAxis(axisIndex, color) {
   const dirs = [[1,0,0],[0,1,0],[0,0,1]];
   const d = dirs[axisIndex];
-  const radius = 0.8;
-  const group = new THREE.Group();
-
-  function makePart(from, to, color) {
-    const len = Math.abs(to - from);
-    const geo = new THREE.CylinderGeometry(radius, radius, len, 8, 1);
-    const mat = new THREE.MeshBasicMaterial({ color });
-    const mesh = new THREE.Mesh(geo, mat);
-    const mid = (from + to) / 2;
-    mesh.position.set(d[0] * mid, d[1] * mid, d[2] * mid);
-    if (d[0] !== 0) mesh.rotation.z = Math.PI / 2;
-    if (d[2] !== 0) mesh.rotation.x = Math.PI / 2;
-    return mesh;
-  }
-
-  group.add(makePart(-S, 0, colorNeg));
-  group.add(makePart(0,  S, colorPos));
-  return group;
+  const positions = new Float32Array([-d[0]*S, -d[1]*S, -d[2]*S, d[0]*S, d[1]*S, d[2]*S]);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
+  return new THREE.Line(geo, mat);
 }
 
 AXES.forEach((axis, i) => {
-  const col = new THREE.Color(axis.color);
-  const dark = col.clone().multiplyScalar(0.15);
-  scene.add(makeCentralAxis(i, '#' + dark.getHexString(), axis.color));
+  scene.add(makeCentralAxis(i, axis.color));
 });
 
 function makeLabel(text, pos, color) {
@@ -447,6 +511,7 @@ function makeLabel(text, pos, color) {
 }
 
 const labelSprites = [];
+const axisLabelObjects = [];
 
 const axisVectors = [
   new THREE.Vector3(1, 0, 0),
@@ -462,6 +527,7 @@ AXES.forEach((axis, i) => {
   scene.add(posSprite);
   scene.add(negSprite);
   labelSprites.push(posSprite, negSprite);
+  axisLabelObjects.push(posSprite, negSprite);
 });
 
 const originGeo = new THREE.SphereGeometry(4, 24, 24);
@@ -488,6 +554,8 @@ function colorFromCoords(x, y, z) {
   return new THREE.Color(norm(x), norm(y), norm(z));
 }
 
+const predefinedObjects = [];
+
 PREDEFINED_POINTS.forEach(pt => {
   const col = colorFromCoords(pt.x, pt.y, pt.z);
   const hexColor = '#' + col.getHexString();
@@ -499,41 +567,24 @@ PREDEFINED_POINTS.forEach(pt => {
   mesh.userData = { label: pt.label, desc: pt.desc };
   scene.add(mesh);
   labelSprites.push(mesh);
+  predefinedObjects.push(mesh);
 
   const g = makeGlow(hexColor, 24);
   g.position.set(pt.x, pt.y, pt.z);
   scene.add(g);
+  predefinedObjects.push(g);
 
   const sprite = makeLabel(pt.label, new THREE.Vector3(pt.x, pt.y + 14, pt.z), hexColor);
   sprite.userData = { label: pt.label, desc: pt.desc };
   scene.add(sprite);
   labelSprites.push(sprite);
+  predefinedObjects.push(sprite);
 });
 const pointGeo = new THREE.SphereGeometry(3, 32, 32);
 const pointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const pointMesh = new THREE.Mesh(pointGeo, pointMat);
 scene.add(pointMesh);
 
-function makeGlow(hexColor, size = 30) {
-  const c = document.createElement('canvas');
-  c.width = 128; c.height = 128;
-  const ctx = c.getContext('2d');
-  const col = new THREE.Color(hexColor);
-  const r = Math.round(col.r * 255);
-  const gv = Math.round(col.g * 255);
-  const b = Math.round(col.b * 255);
-  const g = ctx.createRadialGradient(64,64,0,64,64,64);
-  g.addColorStop(0,   `rgba(${r},${gv},${b},0.8)`);
-  g.addColorStop(0.4, `rgba(${r},${gv},${b},0.27)`);
-  g.addColorStop(1,   `rgba(${r},${gv},${b},0)`);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 128, 128);
-  const tex = new THREE.CanvasTexture(c);
-  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
-  const s = new THREE.Sprite(mat);
-  s.scale.set(size, size, 1);
-  return s;
-}
 const glow = makeGlow('#ffffff');
 scene.add(glow);
 
@@ -552,10 +603,12 @@ function makeProjectionLine(color) {
   const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.35 });
   return new THREE.Line(geo, mat);
 }
-const projX = makeProjectionLine(0xff4466);
-const projY = makeProjectionLine(0x44ff88);
-const projZ = makeProjectionLine(0x448aff);
-scene.add(projX, projY, projZ);
+const projLines = [
+  makeProjectionLine(0xff4466),
+  makeProjectionLine(0x44ff88),
+  makeProjectionLine(0x448aff),
+];
+projLines.forEach(l => scene.add(l));
 
 function setLinePoints(line, a, b) {
   const pos = line.geometry.attributes.position;
@@ -570,9 +623,9 @@ function updateScene() {
   pointMesh.position.set(x, y, z);
   glow.position.set(x, y, z);
   setLinePoints(line, new THREE.Vector3(0,0,0), new THREE.Vector3(x,y,z));
-  setLinePoints(projX, new THREE.Vector3(0,y,z), new THREE.Vector3(x,y,z));
-  setLinePoints(projY, new THREE.Vector3(x,0,z), new THREE.Vector3(x,y,z));
-  setLinePoints(projZ, new THREE.Vector3(x,y,0), new THREE.Vector3(x,y,z));
+  setLinePoints(projLines[0], new THREE.Vector3(0,y,z), new THREE.Vector3(x,y,z));
+  setLinePoints(projLines[1], new THREE.Vector3(x,0,z), new THREE.Vector3(x,y,z));
+  setLinePoints(projLines[2], new THREE.Vector3(x,y,0), new THREE.Vector3(x,y,z));
 }
 
 const raycaster = new THREE.Raycaster();
@@ -626,9 +679,8 @@ canvas.addEventListener('pointerup', e => {
   mouse.y = -((e.clientY - rect.top)   / rect.height) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
   const hits = raycaster.intersectObjects(labelSprites);
-  if (hits.length > 0) {
-    showPopup(hits[0].object.userData);
-  }
+  const hit = hits.find(h => h.object.visible);
+  if (hit) showPopup(hit.object.userData);
 });
 
 popup.addEventListener('click', e => {
@@ -637,9 +689,12 @@ popup.addEventListener('click', e => {
 popup.addEventListener('touchend', e => {
   if (e.target === popup) hidePopup();
 });
+popup.addEventListener('pointerup', e => {
+  if (e.target === popup) hidePopup();
+});
 
 const isMobile = window.innerWidth <= 640;
-let orbit = { active: false, button: -1, lastX: 0, lastY: 0,
+let orbit = { active: false, button: -1, lastX: 0, lastY: 0, wasMoved: false,
               theta: Math.PI/4,
               phi: isMobile ? Math.PI/2.5 : Math.PI/3,
               radius: isMobile ? 580 : 480 };
@@ -726,7 +781,8 @@ canvas.addEventListener('touchend', e => {
       mouse.y = -((t.clientY - rect.top)   / rect.height) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
       const hits = raycaster.intersectObjects(labelSprites);
-      if (hits.length > 0) showPopup(hits[0].object.userData);
+      const hit = hits.find(h => h.object.visible);
+      if (hit) showPopup(hit.object.userData);
     }
   }
 }, { passive: false });
@@ -752,7 +808,7 @@ AXES.forEach(axis => {
     </div>
     <div class="coord-controls">
       <input type="range" id="s${axis.id}" min="-100" max="100" step="1" value="0">
-      <input type="number" id="n${axis.id}" min="-100" max="100" step="1" value="0">
+      <input type="number" id="n${axis.id}" min="-100" max="100" step="1" value="0" inputmode="decimal">
     </div>`;
   coordsEl.appendChild(row);
 });
@@ -790,13 +846,18 @@ AXES.forEach(axis => {
   });
 });
 
+function buildURL() {
+  const p = new URLSearchParams();
+  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
+  return `${location.origin}${location.pathname}?${p.toString()}`;
+}
+
 let urlUpdateTimer = null;
 function updateURL() {
   if (urlUpdateTimer) clearTimeout(urlUpdateTimer);
   urlUpdateTimer = setTimeout(() => {
-    const p = new URLSearchParams();
-    AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
-    history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
+    const url = buildURL();
+    history.replaceState(null, '', url.slice(location.origin.length));
     urlUpdateTimer = null;
   }, 200);
 }
@@ -810,18 +871,39 @@ function loadFromURL() {
 }
 
 document.getElementById('copy-btn').addEventListener('click', () => {
-  const p = new URLSearchParams();
-  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
-  const url = `${location.origin}${location.pathname}?${p.toString()}`;
-  navigator.clipboard.writeText(url).then(() => {
+  const url = buildURL();
+
+  function showCopied() {
     const btn = document.getElementById('copy-btn');
-    btn.textContent = '✓ Скопировано';
+    btn.textContent = '✓';
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = 'Скопировать ссылку';
+      btn.textContent = 'Ссылка';
       btn.classList.remove('copied');
     }, 2000);
-  });
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(showCopied).catch(() => showCopied());
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch {}
+    document.body.removeChild(ta);
+    showCopied();
+  }
+});
+
+document.getElementById('toggle-points').addEventListener('change', e => {
+  predefinedObjects.forEach(obj => { obj.visible = e.target.checked; });
+});
+
+document.getElementById('toggle-labels').addEventListener('change', e => {
+  axisLabelObjects.forEach(obj => { obj.visible = e.target.checked; });
 });
 
 loadFromURL();
