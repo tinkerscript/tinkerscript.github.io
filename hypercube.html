@@ -37,7 +37,6 @@
     height: 100vh;
   }
 
-  
   #panel {
     background: var(--panel);
     border-right: 1px solid var(--border);
@@ -46,6 +45,47 @@
     padding: 28px 24px;
     gap: 32px;
     overflow-y: auto;
+  }
+
+  @media (max-width: 640px) {
+    html, body { overflow: hidden; }
+
+    #app {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      height: 100dvh;
+    }
+
+    #panel {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      gap: 16px;
+      overflow-y: auto;
+      max-height: 44vh;
+    }
+
+    .coords { gap: 14px; }
+
+    .slider-label { font-size: 8px; }
+
+    input[type=range] { height: 3px; }
+
+    input[type=range]::-webkit-slider-thumb {
+      width: 20px; height: 20px;
+    }
+
+    input[type=number] {
+      width: 60px;
+      font-size: 12px;
+      padding: 8px 6px;
+    }
+
+    .share-url { font-size: 9px; }
+
+    .copy-btn { font-size: 10px; padding: 10px 14px; }
+
+    .canvas-hint { font-size: 9px; bottom: 10px; right: 12px; }
   }
 
   .panel-title {
@@ -80,29 +120,7 @@
   .coord-row {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-
-  .coord-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .axis-label {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
-  .axis-label.x { color: var(--accent); }
-  .axis-label.y { color: var(--accent); }
-  .axis-label.z { color: var(--accent); }
-
-  .axis-desc {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
+    gap: 8px;
   }
 
   .coord-controls {
@@ -110,6 +128,19 @@
     align-items: center;
     gap: 10px;
   }
+
+  .slider-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .slider-label.neg { opacity: 0.4; }
 
   
   input[type=range] {
@@ -251,58 +282,7 @@
 <div id="app">
   
   <div id="panel">
-    <div class="coords">
-      
-      <div class="coord-row">
-        <div class="coord-header">
-          <span class="axis-label x">X</span>
-          <span class="axis-desc">горизонталь →</span>
-        </div>
-        <div class="coord-controls">
-          <input type="range" id="sx" class="x" min="-100" max="100" step="0.1" value="0">
-          <input type="number" id="nx" class="x" min="-100" max="100" step="0.1" value="0">
-        </div>
-      </div>
-      
-      <div class="coord-row">
-        <div class="coord-header">
-          <span class="axis-label y">Y</span>
-          <span class="axis-desc">вертикаль ↑</span>
-        </div>
-        <div class="coord-controls">
-          <input type="range" id="sy" class="y" min="-100" max="100" step="0.1" value="0">
-          <input type="number" id="ny" class="y" min="-100" max="100" step="0.1" value="0">
-        </div>
-      </div>
-      
-      <div class="coord-row">
-        <div class="coord-header">
-          <span class="axis-label z">Z</span>
-          <span class="axis-desc">глубина ◉</span>
-        </div>
-        <div class="coord-controls">
-          <input type="range" id="sz" class="z" min="-100" max="100" step="0.1" value="0">
-          <input type="number" id="nz" class="z" min="-100" max="100" step="0.1" value="0">
-        </div>
-      </div>
-    </div>
-
-    
-    <div class="readout">
-      <div class="readout-line">
-        <span>X</span><span class="readout-val" id="rx">0.0</span>
-      </div>
-      <div class="readout-line">
-        <span>Y</span><span class="readout-val" id="ry">0.0</span>
-      </div>
-      <div class="readout-line">
-        <span>Z</span><span class="readout-val" id="rz">0.0</span>
-      </div>
-      <div class="distance">
-        <span>|r| от начала</span>
-        <span class="distance-val" id="rdist">0.0</span>
-      </div>
-    </div>
+    <div class="coords" id="coords"></div>
 
     
     <div class="share-section">
@@ -315,13 +295,34 @@
   
   <div id="canvas-wrap">
     <canvas id="three-canvas"></canvas>
-    <div class="canvas-hint">ЛКМ — вращение · Колесо — зум · ПКМ — панорама</div>
+    <div class="canvas-hint">ЛКМ / палец — вращение · Колесо / щипок — зум</div>
   </div>
 </div>
 
 <script>
 
-const state = { x: 0, y: 0, z: 0 };
+const AXES = [
+  {
+    id: 'x',
+    neg: { label: 'ПСИХОЗ' },
+    pos: { label: 'НЕВРОЗ' },
+    rgb: 'R',
+  },
+  {
+    id: 'y',
+    neg: { label: 'КРИНЖ' },
+    pos: { label: 'ДРИП' },
+    rgb: 'G',
+  },
+  {
+    id: 'z',
+    neg: { label: 'СУВЕРЕННОСТЬ' },
+    pos: { label: 'ПРЕСТИЖ' },
+    rgb: 'B',
+  },
+];
+
+const state = Object.fromEntries(AXES.map(a => [a.id, 0]));
 
 const wrap = document.getElementById('canvas-wrap');
 const canvas = document.getElementById('three-canvas');
@@ -438,15 +439,16 @@ function makeLabel(text, pos, color) {
   return sprite;
 }
 
-const axisLabels = [
-  { text: 'НЕВРОЗ',       pos: new THREE.Vector3( 128,  0,    0),  color: '#ffffff' },
-  { text: 'ПСИХОЗ',       pos: new THREE.Vector3(-128,  0,    0),  color: '#ffffff' },
-  { text: 'ДРИП',         pos: new THREE.Vector3(   0,  128,  0),  color: '#ffffff' },
-  { text: 'КРИНЖ',        pos: new THREE.Vector3(   0, -128,  0),  color: '#ffffff' },
-  { text: 'СУВЕРЕННОСТЬ', pos: new THREE.Vector3(   0,  0,  -128), color: '#ffffff' },
-  { text: 'ПРЕСТИЖ',      pos: new THREE.Vector3(   0,  0,   128), color: '#ffffff' },
+const axisVectors = [
+  new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(0, 0, 1),
 ];
-axisLabels.forEach(({ text, pos, color }) => scene.add(makeLabel(text, pos, color)));
+AXES.forEach((axis, i) => {
+  const dir = axisVectors[i];
+  scene.add(makeLabel(axis.pos.label, dir.clone().multiplyScalar(128), '#ffffff'));
+  scene.add(makeLabel(axis.neg.label, dir.clone().multiplyScalar(-128), '#ffffff'));
+});
 
 const originGeo = new THREE.SphereGeometry(1.5, 16, 16);
 const originMat = new THREE.MeshBasicMaterial({ color: 0x333355 });
@@ -541,15 +543,6 @@ window.addEventListener('mousemove', e => {
   if (orbit.button === 0) {
     orbit.theta -= dx * 0.008;
     orbit.phi   += dy * 0.008;
-  } else if (orbit.button === 2) {
-    
-    const right = new THREE.Vector3();
-    const up    = new THREE.Vector3();
-    camera.getWorldDirection(right);
-    right.cross(camera.up).normalize();
-    up.copy(camera.up);
-    const pan = right.multiplyScalar(-dx * 0.3).add(up.multiplyScalar(dy * 0.3));
-    
   }
   applyOrbit();
 });
@@ -561,6 +554,45 @@ canvas.addEventListener('wheel', e => {
 }, { passive: false });
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    orbit.active = true;
+    orbit.lastX = e.touches[0].clientX;
+    orbit.lastY = e.touches[0].clientY;
+  } else if (e.touches.length === 2) {
+    orbit.pinchDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+  }
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  if (e.touches.length === 1 && orbit.active) {
+    const dx = e.touches[0].clientX - orbit.lastX;
+    const dy = e.touches[0].clientY - orbit.lastY;
+    orbit.lastX = e.touches[0].clientX;
+    orbit.lastY = e.touches[0].clientY;
+    orbit.theta -= dx * 0.008;
+    orbit.phi   += dy * 0.008;
+    applyOrbit();
+  } else if (e.touches.length === 2) {
+    const dist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    orbit.radius = Math.max(80, Math.min(900, orbit.radius - (dist - orbit.pinchDist) * 1.5));
+    orbit.pinchDist = dist;
+    applyOrbit();
+  }
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchend', e => {
+  if (e.touches.length === 0) orbit.active = false;
+}, { passive: false });
+
 let t = 0;
 function animate() {
   requestAnimationFrame(animate);
@@ -571,68 +603,72 @@ function animate() {
 }
 animate();
 
-const axes = ['x','y','z'];
+const coordsEl = document.getElementById('coords');
+AXES.forEach(axis => {
+  const row = document.createElement('div');
+  row.className = 'coord-row';
+  row.innerHTML = `
+    <div class="coord-controls">
+      <span class="slider-label neg">${axis.neg.label}</span>
+      <input type="range" id="s${axis.id}" min="-100" max="100" step="0.1" value="0">
+      <span class="slider-label">${axis.pos.label}</span>
+      <input type="number" id="n${axis.id}" min="-100" max="100" step="0.1" value="0">
+    </div>`;
+  coordsEl.appendChild(row);
+});
 
 function clamp(v) { return Math.max(-100, Math.min(100, v)); }
 function round(v) { return Math.round(v * 10) / 10; }
 
 function syncUI() {
-  axes.forEach(a => {
-    const v = round(state[a]);
-    document.getElementById('s' + a).value = v;
-    document.getElementById('n' + a).value = v;
-    document.getElementById('r' + a).textContent = v.toFixed(1);
+  AXES.forEach(axis => {
+    const v = round(state[axis.id]);
+    document.getElementById('s' + axis.id).value = v;
+    document.getElementById('n' + axis.id).value = v;
   });
-  const d = Math.sqrt(state.x**2 + state.y**2 + state.z**2);
-  document.getElementById('rdist').textContent = d.toFixed(1);
   updateScene();
   updateURL();
   updateShareDisplay();
 }
 
-axes.forEach(a => {
-  document.getElementById('s' + a).addEventListener('input', e => {
-    state[a] = clamp(parseFloat(e.target.value) || 0);
+AXES.forEach(axis => {
+  document.getElementById('s' + axis.id).addEventListener('input', e => {
+    state[axis.id] = clamp(parseFloat(e.target.value) || 0);
     syncUI();
   });
-  document.getElementById('n' + a).addEventListener('input', e => {
+  document.getElementById('n' + axis.id).addEventListener('input', e => {
     const v = clamp(parseFloat(e.target.value) || 0);
-    state[a] = v;
-    document.getElementById('s' + a).value = v;
-    document.getElementById('r' + a).textContent = v.toFixed(1);
-    const d = Math.sqrt(state.x**2 + state.y**2 + state.z**2);
-    document.getElementById('rdist').textContent = d.toFixed(1);
+    state[axis.id] = v;
+    document.getElementById('s' + axis.id).value = v;
     updateScene();
     updateURL();
     updateShareDisplay();
   });
-  document.getElementById('n' + a).addEventListener('change', e => {
+  document.getElementById('n' + axis.id).addEventListener('change', e => {
     let v = parseFloat(e.target.value);
     if (isNaN(v)) v = 0;
-    state[a] = clamp(v);
+    state[axis.id] = clamp(v);
     syncUI();
   });
 });
 
 function updateURL() {
   const p = new URLSearchParams();
-  axes.forEach(a => p.set(a, round(state[a])));
-  const newURL = `${location.pathname}?${p.toString()}`;
-  history.replaceState(null, '', newURL);
+  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
+  history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
 }
 
 function updateShareDisplay() {
   const p = new URLSearchParams();
-  axes.forEach(a => p.set(a, round(state[a])));
-  const url = `${location.origin}${location.pathname}?${p.toString()}`;
-  document.getElementById('share-url').textContent = url;
+  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
+  document.getElementById('share-url').textContent = `${location.origin}${location.pathname}?${p.toString()}`;
 }
 
 function loadFromURL() {
   const p = new URLSearchParams(location.search);
-  axes.forEach(a => {
-    const v = parseFloat(p.get(a));
-    if (!isNaN(v)) state[a] = clamp(round(v));
+  AXES.forEach(axis => {
+    const v = parseFloat(p.get(axis.id));
+    if (!isNaN(v)) state[axis.id] = clamp(round(v));
   });
 }
 
