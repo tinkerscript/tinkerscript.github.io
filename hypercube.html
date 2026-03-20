@@ -619,14 +619,14 @@ AXES.forEach(axis => {
       <span class="slider-label">${axis.pos.label}</span>
     </div>
     <div class="coord-controls">
-      <input type="range" id="s${axis.id}" min="-100" max="100" step="0.1" value="0">
-      <input type="number" id="n${axis.id}" min="-100" max="100" step="0.1" value="0">
+      <input type="range" id="s${axis.id}" min="-100" max="100" step="1" value="0">
+      <input type="number" id="n${axis.id}" min="-100" max="100" step="1" value="0">
     </div>`;
   coordsEl.appendChild(row);
 });
 
 function clamp(v) { return Math.max(-100, Math.min(100, v)); }
-function round(v) { return Math.round(v * 10) / 10; }
+function round(v) { return Math.round(v); }
 
 function syncUI() {
   AXES.forEach(axis => {
@@ -660,16 +660,21 @@ AXES.forEach(axis => {
   });
 });
 
-function updateURL() {
-  const p = new URLSearchParams();
-  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
-  history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
-}
-
 function updateShareDisplay() {
   const p = new URLSearchParams();
   AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
   document.getElementById('share-url').textContent = `${location.origin}${location.pathname}?${p.toString()}`;
+}
+
+let urlUpdateTimer = null;
+function updateURL() {
+  if (urlUpdateTimer) return;
+  urlUpdateTimer = setTimeout(() => {
+    const p = new URLSearchParams();
+    AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
+    history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
+    urlUpdateTimer = null;
+  }, 200);
 }
 
 function loadFromURL() {
@@ -682,7 +687,7 @@ function loadFromURL() {
 
 document.getElementById('copy-btn').addEventListener('click', () => {
   const p = new URLSearchParams();
-  axes.forEach(a => p.set(a, round(state[a])));
+  AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
   const url = `${location.origin}${location.pathname}?${p.toString()}`;
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('copy-btn');
