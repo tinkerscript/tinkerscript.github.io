@@ -513,37 +513,36 @@ AXES.forEach((axis, i) => {
 });
 
 function makeLabel(text, pos, color) {
+  const dpr = 4;
   const padding = 20;
   const fontSize = 28;
-  
+
   const tmp = document.createElement('canvas');
   const tmpCtx = tmp.getContext('2d');
-  tmpCtx.font = `bold ${fontSize}px "JetBrains Mono", monospace`;
+  tmpCtx.font = `bold ${fontSize * dpr}px "JetBrains Mono", monospace`;
   const textW = tmpCtx.measureText(text).width;
 
-  const cw = Math.ceil(textW) + padding * 2;
-  const ch = fontSize + padding * 2;
+  const cw = Math.ceil(textW) + padding * dpr * 2;
+  const ch = fontSize * dpr + padding * dpr * 2;
   const c = document.createElement('canvas');
   c.width = cw; c.height = ch;
   const ctx = c.getContext('2d');
 
-  
   ctx.shadowColor = color;
-  ctx.shadowBlur = 18;
+  ctx.shadowBlur = 18 * dpr;
   ctx.fillStyle = color;
-  ctx.font = `bold ${fontSize}px "JetBrains Mono", monospace`;
+  ctx.font = `bold ${fontSize * dpr}px "JetBrains Mono", monospace`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  
   ctx.fillText(text, cw / 2, ch / 2);
   ctx.fillText(text, cw / 2, ch / 2);
 
   const tex = new THREE.CanvasTexture(c);
   const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
   const sprite = new THREE.Sprite(mat);
-  
+
   const scale = 0.55;
-  sprite.scale.set(cw * scale, ch * scale, 1);
+  sprite.scale.set(cw * scale / dpr, ch * scale / dpr, 1);
   sprite.position.copy(pos);
   return sprite;
 }
