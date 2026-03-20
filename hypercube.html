@@ -84,15 +84,6 @@
     .canvas-hint { font-size: 9px; bottom: 10px; right: 12px; }
   }
 
-  .panel-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
   .coords {
     display: flex;
     flex-direction: column;
@@ -286,21 +277,24 @@
 const AXES = [
   {
     id: 'x',
+    color: '#ff2244',
+    axisDesc: 'отношение к Реальному (побег vs преследование)',
     neg: { label: 'ПСИХОЗ', desc: 'Психотик постоянно шагает в бездну, но каждый раз промахивается, что вынуждает его жить в перманентной ажитации, балансировать на грани между фрустрацией и эйфорией. Он застрял посреди бескрайней равнодушной данности, безучастной к его мыслям и чувствам.' },
     pos: { label: 'НЕВРОЗ', desc: 'Невротик пытается скрыться, возвести стены, отгородиться от ужаса небытия, который всё равно проникает в его вымышленную реальность через сны, оговорки и навязчивые мысли. Для него окружающий мир соткан из символов, образов и правил, о смысле которых страшно подумать.' },
-    rgb: 'R',
   },
   {
     id: 'y',
+    color: '#00ffee',
+    axisDesc: 'стиль включения в стратегию (игра с тектоничностью vs максимизация)',
     neg: { label: 'КРИНЖ', desc: 'Кринж — это определённый подход к эстетике существования, использующий несоответствия между конструкцией и композицией. Термин не несёт уничижительного смысла. Одним из самых ярких его примеров является классическая опера.' },
     pos: { label: 'ДРИП',  desc: 'Дрип — максимизация тектоничности. Стиль включения в стратегию реализации базовой интенции, при котором все элементы существования направлены на достижение максимальной органичности и цельности.' },
-    rgb: 'G',
   },
   {
     id: 'z',
+    color: '#aaff00',
+    axisDesc: 'стратегия реализации (имманентное vs трансцендентное)',
     neg: { label: 'СУВЕРЕННОСТЬ', desc: 'Суверенность — имманентные стратегии обращения к себе и радикальной театрализации, которые отрицают онтологический статус трансцендентного. Суверенный тип пересоздаёт самого себя, работая с собой напрямую.' },
     pos: { label: 'ПРЕСТИЖ',      desc: 'Престиж — взаимодействие с Реальным через обращение к трансцендентному Абстрактному Папочке: гипостазированному идеалу, верифицирующему интенцию. Его разновидностями являются образы государства, традиции, классового сознания, нации, идеологии.' },
-    rgb: 'B',
   },
 ];
 
@@ -394,13 +388,15 @@ function makeCentralAxis(axis, colorNeg, colorPos) {
   colors.set([cp.r, cp.g, cp.b], 3);
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
-  const mat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.6, linewidth: 1 });
+  const mat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, linewidth: 2 });
   return new THREE.Line(geo, mat);
 }
 
-scene.add(makeCentralAxis(0, '#220000', '#ff0000'));
-scene.add(makeCentralAxis(1, '#002200', '#00ff00'));
-scene.add(makeCentralAxis(2, '#000022', '#0000ff'));
+AXES.forEach((axis, i) => {
+  const col = new THREE.Color(axis.color);
+  const dark = col.clone().multiplyScalar(0.15);
+  scene.add(makeCentralAxis(i, '#' + dark.getHexString(), axis.color));
+});
 
 function makeLabel(text, pos, color) {
   const padding = 20;
@@ -447,8 +443,8 @@ const axisVectors = [
 ];
 AXES.forEach((axis, i) => {
   const dir = axisVectors[i];
-  const posSprite = makeLabel(axis.pos.label, dir.clone().multiplyScalar(128), '#ffffff');
-  const negSprite = makeLabel(axis.neg.label, dir.clone().multiplyScalar(-128), '#ffffff');
+  const posSprite = makeLabel(axis.pos.label, dir.clone().multiplyScalar(128), axis.color);
+  const negSprite = makeLabel(axis.neg.label, dir.clone().multiplyScalar(-128), axis.color);
   posSprite.userData = { label: axis.pos.label, desc: axis.pos.desc };
   negSprite.userData = { label: axis.neg.label, desc: axis.neg.desc };
   scene.add(posSprite);
@@ -456,9 +452,20 @@ AXES.forEach((axis, i) => {
   labelSprites.push(posSprite, negSprite);
 });
 
-const originGeo = new THREE.SphereGeometry(1.5, 16, 16);
-const originMat = new THREE.MeshBasicMaterial({ color: 0x333355 });
-scene.add(new THREE.Mesh(originGeo, originMat));
+const originGeo = new THREE.SphereGeometry(4, 24, 24);
+const originMat = new THREE.MeshBasicMaterial({ color: 0x444466 });
+const originMesh = new THREE.Mesh(originGeo, originMat);
+originMesh.userData = {
+  label: 'Оси пространства состояний',
+  lines: AXES.map(a => ({
+    color: a.color,
+    neg: a.neg.label,
+    pos: a.pos.label,
+    desc: a.axisDesc,
+  })),
+};
+scene.add(originMesh);
+labelSprites.push(originMesh);
 
 const PREDEFINED_POINTS = [
   { x: -100, y:  100, z: -100, label: 'Уличный самурай', desc: 'Суверенно-психотический дрип. Уличные самураи. 😎👌🏻' },
@@ -579,9 +586,18 @@ const popup = document.getElementById('pole-popup');
 const popupTitle = document.getElementById('pole-popup-title');
 const popupDesc = document.getElementById('pole-popup-desc');
 
-function showPopup(label, desc) {
-  popupTitle.textContent = label;
-  popupDesc.textContent = desc;
+function showPopup(userData) {
+  popupTitle.textContent = userData.label;
+  if (userData.lines) {
+    popupDesc.innerHTML = userData.lines.map(l =>
+      `<div style="margin-bottom:10px">
+        <span style="color:${l.color};font-weight:700">${l.neg} — ${l.pos}</span><br>
+        <span>${l.desc}</span>
+      </div>`
+    ).join('');
+  } else {
+    popupDesc.textContent = userData.desc || '';
+  }
   popup.classList.add('visible');
 }
 
@@ -594,18 +610,21 @@ let pointerDownX = 0;
 let pointerDownY = 0;
 
 canvas.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch') return;
   pointerMoved = false;
   pointerDownX = e.clientX;
   pointerDownY = e.clientY;
 });
 
 canvas.addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch') return;
   const dx = e.clientX - pointerDownX;
   const dy = e.clientY - pointerDownY;
   if (Math.hypot(dx, dy) > 6) pointerMoved = true;
 });
 
 canvas.addEventListener('pointerup', e => {
+  if (e.pointerType === 'touch') return;
   if (pointerMoved) return;
   const rect = canvas.getBoundingClientRect();
   mouse.x =  ((e.clientX - rect.left)  / rect.width)  * 2 - 1;
@@ -613,8 +632,7 @@ canvas.addEventListener('pointerup', e => {
   raycaster.setFromCamera(mouse, camera);
   const hits = raycaster.intersectObjects(labelSprites);
   if (hits.length > 0) {
-    const { label, desc } = hits[0].object.userData;
-    showPopup(label, desc);
+    showPopup(hits[0].object.userData);
   }
 });
 
@@ -669,6 +687,7 @@ canvas.addEventListener('contextmenu', e => e.preventDefault());
 canvas.addEventListener('touchstart', e => {
   if (e.touches.length === 1) {
     orbit.active = true;
+    orbit.wasMoved = false;
     orbit.lastX = e.touches[0].clientX;
     orbit.lastY = e.touches[0].clientY;
   } else if (e.touches.length === 2) {
@@ -684,6 +703,7 @@ canvas.addEventListener('touchmove', e => {
   if (e.touches.length === 1 && orbit.active) {
     const dx = e.touches[0].clientX - orbit.lastX;
     const dy = e.touches[0].clientY - orbit.lastY;
+    if (Math.hypot(dx, dy) > 4) orbit.wasMoved = true;
     orbit.lastX = e.touches[0].clientX;
     orbit.lastY = e.touches[0].clientY;
     orbit.theta -= dx * 0.008;
@@ -702,7 +722,18 @@ canvas.addEventListener('touchmove', e => {
 }, { passive: false });
 
 canvas.addEventListener('touchend', e => {
-  if (e.touches.length === 0) orbit.active = false;
+  if (e.touches.length === 0) {
+    orbit.active = false;
+    if (!orbit.wasMoved && e.changedTouches.length === 1) {
+      const t = e.changedTouches[0];
+      const rect = canvas.getBoundingClientRect();
+      mouse.x =  ((t.clientX - rect.left)  / rect.width)  * 2 - 1;
+      mouse.y = -((t.clientY - rect.top)   / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(labelSprites);
+      if (hits.length > 0) showPopup(hits[0].object.userData);
+    }
+  }
 }, { passive: false });
 
 let t = 0;
@@ -766,7 +797,7 @@ AXES.forEach(axis => {
 
 let urlUpdateTimer = null;
 function updateURL() {
-  if (urlUpdateTimer) return;
+  if (urlUpdateTimer) clearTimeout(urlUpdateTimer);
   urlUpdateTimer = setTimeout(() => {
     const p = new URLSearchParams();
     AXES.forEach(axis => p.set(axis.id, round(state[axis.id])));
