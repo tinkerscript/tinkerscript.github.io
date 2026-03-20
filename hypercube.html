@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Координаты</title>
+<title>Пространство состояний</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 
@@ -62,7 +62,7 @@
       padding: 16px;
       gap: 16px;
       overflow-y: auto;
-      max-height: 44vh;
+      max-height: 36vh;
     }
 
     .coords { gap: 14px; }
@@ -522,8 +522,11 @@ function updateScene() {
   setLinePoints(projZ, new THREE.Vector3(x,y,0), new THREE.Vector3(x,y,z));
 }
 
+const isMobile = window.innerWidth <= 640;
 let orbit = { active: false, button: -1, lastX: 0, lastY: 0,
-              theta: Math.PI/4, phi: Math.PI/3, radius: 480 };
+              theta: Math.PI/4,
+              phi: isMobile ? Math.PI/2.5 : Math.PI/3,
+              radius: isMobile ? 580 : 480 };
 
 function applyOrbit() {
   orbit.phi = Math.max(0.05, Math.min(Math.PI - 0.05, orbit.phi));
