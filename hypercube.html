@@ -809,7 +809,12 @@ canvas.addEventListener('touchmove', e => {
 }, { passive: false });
 
 canvas.addEventListener('touchend', e => {
-  if (e.touches.length === 0) {
+  if (e.touches.length === 1) {
+    orbit.active = true;
+    orbit.wasMoved = true;
+    orbit.lastX = e.touches[0].clientX;
+    orbit.lastY = e.touches[0].clientY;
+  } else if (e.touches.length === 0) {
     orbit.active = false;
     if (!orbit.wasMoved && e.changedTouches.length === 1) {
       const t = e.changedTouches[0];
